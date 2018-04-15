@@ -56,7 +56,7 @@ struct Comp {
 	}
 };
 
-// see struct ttinfo in timezone/tzfile.h of glibc source archive
+// see struct ttinfo in timezone/tzfile.h which can find in glibc source archive
 //
 // struct ttinfo {
 // 		long					tt_gmtoff;
@@ -261,7 +261,7 @@ time_t TimeZone::fromLocalTime(const struct tm& localTm) const {
 	time_t seconds = timegm(&tmp);
 	detail::Transition sentry(0, seconds, 0);
 	// ADL
-	const detail::Localtime* local = Localtime(data, sentry, detail::Comp(false));
+	const detail::Localtime* local = findLocaltime(data, sentry, detail::Comp(false));
 
 	if (localTm.tm_isdst) {
 		struct tm tryTm = toLocalTime(seconds - local->gmtOffset);
