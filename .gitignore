@@ -1,0 +1,35 @@
+# Prerequisites(makefile)
+*.d
+
+# Compiled Object files
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled static libraries
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# swap files
+*~
+*.swp
+.DS_store
+
+# TODO files
+TODO
+
+# others
+.vscode/
