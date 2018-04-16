@@ -1,5 +1,6 @@
 #include <leanet/thread.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <assert.h>
 #include <leanet/currentthread.h>
 
@@ -10,9 +11,29 @@ namespace currentThread {
 __thread uint64_t t_cachedTid = 0;
 __thread const char* t_threadName = "unknown";
 
+__thread char t_tidString[32];
+__thread int t_tidStringLength = 6;
+
 } // namespace leanet::currentThread
 
 namespace detail {
+
+void afterFork() {
+	leanet::currentThread::t_cachedTid = 0;
+	leanet::currentThread::t_threadName = "main";
+	leanet::currentThread::tid();
+}
+
+class ThreadNameInitializer {
+public:
+	ThreadNameInitializer() {
+		leanet::currentThread::t_threadName = "main";
+		leanet::currentThread::tid();
+		::pthread_atfork(NULL, NULL, &afterFork);
+	}
+};
+// in main thread...
+ThreadNameInitializer nameInitializer;
 
 uint64_t gettid() {
 	// under linux
@@ -66,6 +87,9 @@ namespace currentThread {
 void cacheTid() {
 	if (t_cachedTid == 0) {
 		t_cachedTid = detail::gettid();
+		// cache tid string and tid length for logging
+		t_tidStringLength = snprintf(t_tidString, sizeof(t_tidString),
+				"%5u ", t_cachedTid);
 	}
 }
 

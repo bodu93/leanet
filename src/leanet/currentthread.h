@@ -9,6 +9,9 @@ namespace currentThread {
 
 extern __thread uint64_t t_cachedTid;
 extern __thread const char* t_threadName;
+// for logging
+extern __thread int t_tidString[32];
+extern __thread int t_tidStringLength;
 
 void cacheTid();
 
@@ -25,6 +28,16 @@ inline const char* name() {
 }
 
 bool isMainThread();
+
+// for logging
+inline const char* tidString() {
+	return t_tidString;
+}
+
+// for logging
+inline int tidStringLength() {
+	return t_tidStringLength;
+}
 
 } // namespace leanet::currentThread
 
