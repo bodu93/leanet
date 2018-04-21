@@ -1,8 +1,9 @@
 #include <leanet/posix.h>
-#include <pthread.h>
 
 namespace posix {
 
+// pthread apis
+//
 int pthread_equal(pthread_t lhs, pthread_t rhs) {
 	return ::pthread_equal(lhs, rhs);
 }
@@ -71,4 +72,4 @@ int pthread_cond_wait(pthread_cond_t* cond, pthread_mutex_t* mutex) {
 	return ::pthread_cond_wait(cond, mutex);
 }
 
-} // namespace leanet
+} // namespace posix

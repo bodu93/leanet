@@ -5,6 +5,7 @@
 
 // a middle tier to capture posix calls used in this library
 namespace posix {
+	// pthread apis
 	int pthread_equal(pthread_t lhs, pthread_t rhs);
 	pthread_t pthread_self();
 	int pthread_create(

@@ -2,149 +2,113 @@
 #define LEANET_BUFFER_H
 
 #include <assert.h>
-#include <string>
+#include <string.h>
+
+#include <utility> // std::swap since C++11
+#include <algorithm>
+#include <vector>
+
+#include <leanet/copyable.h>
 #include <leanet/stringview.h>
-#include <algorithm> // std::copy
 
 namespace leanet {
 
-// a circular buffer
-class Buffer {
+//
+// two usages:
+// 1. as an input buffer
+// at host endpoint: read begin with readerIndex to app buffer
+// at net endpoint: ssize_t len = ::read(sockfd, writerIndex, writableBytes())
+// 									advance writer index to len
+// 2. as an output buffer
+// at host endpoint: ssize_t len = ::write(sockfd, readerIndex, readableBytes())
+// 									 advance reader index to len
+// at net endpoint: append data from writerIndex
+//
+
+class Buffer: public copyable {
 public:
-	static const size_t kInitialSize = 1024;
+	static const size_t kCheapPrepend = 8;
+	static const size_t kInitialSize = 1024; // 1k
 
 	explicit Buffer(size_t initialSize = kInitialSize)
-		: size_(initialSize + 1),
-			buffer_(new char[size_]),
-			writerIndex_(0),
-			readerIndex_(0)
+		: buffer_(kCheapPrepend + initialSize),
+			readerIndex_(kCheapPrepend),
+			writerIndex_(kCheapPrepend)
 	{
 		assert(readableBytes() == 0);
-		assert(writableBytes() == (size_ - 1));
+		assert(writableBytes() == initialSize);
+		assert(prependableBytes() == kCheapPrepend);
 	}
 
-	Buffer(const Buffer& other)
-		: size_(other.size_),
-			buffer_(new char[other.size_]),
-			writerIndex_(other.writerIndex_),
-			readerIndex_(other.readerIndex_)
-	{
-		if (other.needRewind()) {
-			std::copy(other.beginRead(),
-								other.bufferEnd(),
-								beginRead());
-			std::copy(other.bufferBegin(),
-								other.beginWrite(),
-								bufferBegin());
-		} else {
-			std::copy(other.beginRead(),
-								other.beginWrite(),
-								beginRead());
-		}
-	}
-
-	Buffer& operator=(const Buffer& other) {
-		Buffer tmp(other);
-		tmp.swap(*this);
-		return *this;
-	}
-
-	~Buffer() {
-		delete[] buffer_;
-	}
+	// implicit copy-control members are okay
 
 	void swap(Buffer& other) {
-		std::swap(size_, other.size_);
-		std::swap(buffer_, other.buffer_);
-		std::swap(writerIndex_, other.writerIndex_);
+		buffer_.swap(other.buffer_);
 		std::swap(readerIndex_, other.readerIndex_);
+		std::swap(writerIndex_, other.writerIndex_);
+	}
+
+	void prepend(const void* data, size_t len) {
+		assert(len <= prependableBytes());
+		readerIndex_ -= len;
+		const char* d = static_cast<const char*>(data);
+		std::copy(d, d + len, begin() + readerIndex_());
+	}
+
+	size_t prependableBytes() const {
+		return readerIndex_;
+	}
+
+	char* readBegin() {
+		return begin() + readerIndex_;
+	}
+
+	const char* readBegin() {
+		return begin() + readerIndex_;
 	}
 
 	size_t readableBytes() const {
-		int diff = writerIndex_ - readerIndex_;
-		if (diff < 0) {
-			diff += size_;
+		return writerIndex_ - readerIndex_;
+	}
+
+	void readAdvanceAll() {
+		readerIndex_ = kCheapPrepend;
+		writerIndex_ = kCheapPrepend;
+	}
+
+	void readAdvance(size_t len) {
+		std::size_t gap = std::min(len, readableBytes());
+		readerIndex_ += gap;
+		if (readerIndex_ == writerIndex_) {
+			readAdanceAll();
 		}
-		assert(diff >= 0);
-		return diff;
+	}
+
+	char* writeBegin() {
+		return begin() + writerIndex_;
+	}
+
+	const char* writeBegin() const {
+		return begin() + writerIndex_;
 	}
 
 	size_t writableBytes() const {
-		return size_ - 1 - readableBytes();
+		return buffer_.size() - writerIndex_;
 	}
 
-	const char* beginRead() const {
-		return buffer_ + readerIndex_;
-	}
-
-	const char* beginWrite() const {
-		return buffer_ + writerIndex_;
+	void writeAdvance(size_t len) {
+		size_t gap = std::min(len, writableBytes());
+		writerIndex_ += gap;
 	}
 
 	void append(const char* data, size_t len) {
 		ensureWritableBytes(len);
-
-		size_t last = writerIndex_ + len;
-		if (last <= size_) {
-			std::copy(data,
-								data + len,
-								beginWrite());
-		} else {
-			std::copy(data,
-								data + size_ - writerIndex_,
-								beginWrite());
-			std::copy(data + size_ - writerIndex_,
-								data + len,
-								bufferBegin());
-		}
-		writeAhead(len);
+		std::copy(data, data + len, beginWrite());
+		writeAdvance(len);
 	}
 
-	void append(const void* data, size_t len) {
-		append(static_cast<const char*>(data), len);
-	}
-
-	void append(const StringView& view) {
-		append(view.data(), view.size());
-	}
-
-	void append(const std::string& str) {
-		append(str.data(), str.size());
-	}
-
-	void retrieveAll() {
-		readerIndex_ = 0;
-		writerIndex_ = 0;
-	}
-
-	void retrieve(size_t len) {
-		if (len < readableBytes()) {
-			readAhead(len);
-		} else {
-			retrieveAll();
-		}
-	}
-
-	// no retrieveAsStringView or retrieveAllAsStringView because of
-	// non-continuous buffer
-	std::string retrieveAsString(size_t len) {
-		len = std::min(readableBytes(), len);
-		std::string result;
-		result.reserve(len);
-		if (needRewind()) {
-			result.assign(beginRead(), bufferEnd());
-			result.append(bufferBegin(), beginWrite());
-		} else {
-			result.assign(beginRead(), beginWrite());
-		}
-		retrieve(len);
-
-		return result;
-	}
-
-	std::string retrieveAllAsString() {
-		return retrieveAsString(readableBytes());
-	}
+	// like append but data from fd
+	ssize_t readFd(int fd, int* savedErrno);
 
 	void ensureWritableBytes(size_t len) {
 		if (writableBytes() < len) {
@@ -153,71 +117,37 @@ public:
 		assert(writableBytes() >= len);
 	}
 
-	// for debug
-	size_t internalSize() const {
-		return size_;
-	}
-
 private:
-	void writeAhead(size_t len) {
-		writerIndex_ = (writerIndex_ + len) % size_;
+	char* begin() {
+		return &*buffer_.begin();
 	}
 
-	void readAhead(size_t len) {
-		readerIndex_ = (readerIndex_ + len) % size_;
-	}
-
-	bool needRewind() const {
-		return readerIndex_ > writerIndex_;
-	}
-
-	char* beginRead() {
-		return buffer_ + readerIndex_;
-	}
-
-	char* beginWrite() {
-		return buffer_ + writerIndex_;
-	}
-
-	const char* bufferBegin() const {
-		return buffer_;
-	}
-
-	const char* bufferEnd() const {
-		return buffer_ + size_;
-	}
-
-	char* bufferBegin() {
-		return buffer_;
-	}
-
-	char* bufferEnd() {
-		return buffer_ + size_;
+	const char* begin() {
+		return &*buffer_.begin();
 	}
 
 	void extend(size_t len) {
-		size_t rlen = readableBytes();
-		len += rlen;
-		len *= 2;
-
-		Buffer tmp(len);
-		if (needRewind()) {
-			tmp.append(beginRead(), bufferEnd() - beginRead());
-			tmp.append(bufferBegin(), beginWrite() - bufferBegin());
-		} else {
-			tmp.append(beginRead(), readableBytes());
+		/* no more buffer in buffer_ */
+		if (writableBytes() + prependableBytes() < len + kCheapPrepend) {
+			buffer_.resize(writerIndex_ + len);
+		} else { /* just need to move ahead */
+			assert(kCheapPrepend < readerIndex_);
+			size_t readable = readableBytes();
+			/* move ahead */
+			std::copy(begin() + readerIndex_,
+								begin() + writerIndex_,
+								begin() + kCheapPrepend);
+			readerIndex_ = kCheapPrepend;
+			writerIndex_ = readerIndex_ + readable;
+			assert(readable == readableBytes());
 		}
-		tmp.swap(*this);
 	}
 
-	size_t size_;
-	char*  buffer_;
-
-	size_t writerIndex_;
+	std::vector<char> buffer_;
 	size_t readerIndex_;
+	size_t writerIndex_;
+
 	static const char kCRLF[];
 };
 
-} // namespace leanet
-
-#endif
+#endif // LEANET_BUFFER_H
