@@ -11,6 +11,7 @@
 #include <strings.h> // bzero
 #include <stdio.h> // snprintf
 
+#include <leanet/types.h>
 #include <leanet/logger.h>
 
 using namespace leanet;
@@ -19,7 +20,7 @@ namespace {
 
 #if VALGRIND || defined (NO_ACCEPT4)
 void setNonBlockAndCloseOnExec(int sockfd) {
-	// non blocking
+	// non blocking: non-inheritable of accept(2) under Linux
 	int flags = ::fcntl(sockfd, F_GETFL, 0);
 	flags |= O_NONBLOCK;
 	int ret = ::fcntl(sockfd, F_SETFL, flags);
@@ -27,7 +28,7 @@ void setNonBlockAndCloseOnExec(int sockfd) {
 		LOG_SYSFATAL << "::fcntl";
 	}
 
-	// close on exec
+	// close on exec: non-inheritable of accept(2) under Linux
 	flags = ::fcntl(sockfd, F_GETFD, 0);
 	flags |= FD_CLOEXEC;
 	ret = ::fcntl(sockfd, F_SETFD, flags);
@@ -121,27 +122,65 @@ void shutdownWrite(int sockfd) {
 	}
 }
 
+//
+// IPv4 socket address
+// struct in_addr {
+// 		in_addr_t  s_addr;
+// };
+//
+// struct sockaddr_in {
+// 		uint8_t					sin_len;
+// 		sa_family_t			sin_family;
+// 		in_port_t				sin_port;
+//
+// 		struct in_addr	sin_addr;
+//
+// 		char						sin_zero[8];
+// };
+//
+// IPv6 socket address
+// struct in6_addr {
+// 		uint_8_t s6_addr[16];
+// };
+//
+// struct sockaddr_in6 {
+// 		uint8_t					sin6_len;
+// 		sa_family_t			sin6_family;
+// 		in_port_t				sin6_port;
+//
+// 		uint32_t				sin6_flowinfo;
+// 		struct in6_addr	sin6_addr;
+//
+// 		uint32_t				sin6_scope_id;
+// };
+//
 const struct sockaddr* sockaddr_cast(const struct sockaddr_in6* addr) {
-	return static_cast<const struct sockaddr*>(
-			static_cast<const void*>(addr));
+	return static_cast<const struct sockaddr*>(implicit_cast<const void*>(addr));
 }
 
 const struct sockaddr* sockaddr_cast(struct sockaddr_in6* addr) {
-	return static_cast<struct sockaddr*>(static_cast<void*>(addr));
+	return static_cast<struct sockaddr*>(implicit_cast<void*>(addr));
 }
 
 const struct sockaddr* sockaddr_cast(const struct sockaddr_in* addr) {
-	return static_cast<const struct sockaddr*>(static_cast<const void*>(addr));
+	return static_cast<const struct sockaddr*>(implicit_cast<const void*>(addr));
 }
 
 const struct sockaddr_in* sockaddr_in_cast(const struct sockaddr* addr) {
-	return static_cast<const struct sockaddr_in*>(static_cast<const void*>(addr));
+	return static_cast<const struct sockaddr_in*>(implicit_cast<const void*>(addr));
 }
 
 const struct sockaddr_in6* sockaddr_in6_cast(const struct sockaddr* addr) {
-	return static_cast<const struct sockaddr_in6*>(static_cast<const void*>(addr));
+	return static_cast<const struct sockaddr_in6*>(implicit_cast<const void*>(addr));
 }
 
+//
+// struct sockaddr {
+// 		uint8_t				sa_len;
+// 		sa_family_t		sa_family;
+// 		char					sa_data[14];
+// };
+//
 void toIp(char* buf, size_t size, const struct sockaddr* addr) {
 	if (addr->sa_family == AF_INET) {
 		assert(size >= INET_ADDRSTRLEN);
@@ -192,7 +231,7 @@ int getSocketError(int sockfd) {
 
 struct sockaddr_in6 getLocalAddr(int sockfd) {
 	struct sockaddr_in6 localaddr;
-	bzero(&localaddr, sizeof(localaddr));
+	::bzero(&localaddr, sizeof(localaddr));
 	socklen_t addrlen = static_cast<socklen_t>(sizeof(localaddr));
 	if (::getsockname(sockfd, sockaddr_cast(&localaddr), &addrlen) < 0) {
 		LOG_SYSERR << "sockets::getLocalAddr";
@@ -200,9 +239,9 @@ struct sockaddr_in6 getLocalAddr(int sockfd) {
 	return localaddr;
 }
 
-struct sockaddr_in getPeerAddr(int sockfd) {
+struct sockaddr_in6 getPeerAddr(int sockfd) {
 	struct sockaddr_in6 peeraddr;
-	bzero(&peeraddr, sizeof(peeraddr));
+	::bzero(&peeraddr, sizeof(peeraddr));
 	socklen_t addrlen = static_cast<socklen_t>(sizeof(peeraddr));
 	if (::getpeername(sockfd, sockaddr_cast(&peeraddr), &addrlen) < 0) {
 		LOG_SYSERR << "sockets::getPeerAddr";
@@ -220,7 +259,7 @@ bool isSelfConnected(int sockfd) {
 			&& laddr4->sin_addr.s_addr == raddr4->sin_addr.s_addr;
 	} else if (localaddr.sin6_family == AF_INET6) {
 		return localaddr.sin6_port == peeraddr.sin6_port
-			&& ::memcmp(&localaddr.sin_addr, &peeraddr, sin6_addr, sizeof(localaddr.sin6_addr)) == 0;
+			&& ::memcmp(&localaddr.sin6_addr, &peeraddr.sin6_addr, sizeof(localaddr.sin6_addr)) == 0;
 	} else {
 		return false;
 	}
@@ -243,6 +282,16 @@ void close(int sockfd) {
 	if (::close(sockfd) < 0) {
 		LOG_SYSERR << "sockets::close";
 	}
+}
+
+uint64_t netToHost64(uint64_t n) {
+	// TODO
+	return 0;
+}
+
+uint64_t hostToNet64(uint64_t n) {
+	// TODO
+	return 0;
 }
 
 uint32_t netToHost32(uint32_t n) {

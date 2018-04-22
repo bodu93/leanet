@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <vector>
 
+#include <leanet/types.h>
 #include <leanet/copyable.h>
 #include <leanet/sockets.h>
 #include <leanet/stringview.h>
@@ -18,11 +19,11 @@ namespace leanet {
 // two usages:
 // 1. as an input buffer
 // at host endpoint: read begin with readerIndex to app buffer
-// at net endpoint: ssize_t len = ::read(sockfd, writerIndex, writableBytes())
-// 									advance writer index to len
+// at net endpoint: ssize_t len = ::read(sockfd, beginWrite(), writableBytes())
+// 									hasWritten(len)
 // 2. as an output buffer
-// at host endpoint: ssize_t len = ::write(sockfd, readerIndex, readableBytes())
-// 									 advance reader index to len
+// at host endpoint: ssize_t len = ::write(sockfd, peek(), readableBytes())
+// 									 retrieve(len)
 // at net endpoint: append data from writerIndex
 //
 
@@ -49,6 +50,14 @@ public:
 		std::swap(writerIndex_, other.writerIndex_);
 	}
 
+	//
+	// prepend series functions:
+	// append before reader index
+	//
+	size_t prependableBytes() const {
+		return readerIndex_;
+	}
+
 	void prepend(const void* data, size_t len) {
 		assert(len <= prependableBytes());
 		readerIndex_ -= len;
@@ -56,56 +65,199 @@ public:
 		std::copy(d, d + len, begin() + readerIndex_());
 	}
 
-	size_t prependableBytes() const {
-		return readerIndex_;
+	void prependInt64(int64_t x) {
+		// just bytes, so we use uint64...
+		int64_t be64 = sockets::hostToNet64(x);
+		prepend(&be64, sizeof(be64));
 	}
 
-	char* readBegin() {
-		return begin() + readerIndex_;
+	void prependInt32(int32_t x) {
+		int32_t be32 = sockets::hostToNet32(x);
+		prepend(&be32, sizeof(be32));
 	}
 
-	const char* readBegin() {
-		return begin() + readerIndex_;
+	void prependInt16(int16_t x) {
+		int16_t be16 = sockets::hostToNet16(x);
+		prepend(&be16, sizeof(be16));
 	}
 
+	void prependInt8(int8_t x) {
+		prepend(&x, sizeof(x));
+	}
+
+	//
+	// read series functions
+	//
 	size_t readableBytes() const {
 		return writerIndex_ - readerIndex_;
 	}
 
-	void readAdvanceAll() {
+	const char* peek() const {
+		return begin() + readerIndex_;
+	}
+
+	int64_t peekInt64() const {
+		assert(readableBytes() >= sizeof(int64_t));
+		int64 i64 = 0;
+		::memcpy(&i64, peek(), sizeof(i64));
+		return sockets::netToHost64(i64);
+	}
+
+	int32_t peekInt32() const {
+		assert(readableBytes() >= sizeof(int32_t));
+		int32_t i32 = 0;
+		::memcpy(&i32, peek(), sizeof(i32));
+		return sockets::netToHost32(i32);
+	}
+
+	int16_t peekInt16() const {
+		assert(readableBytes() >= sizeof(int16_t));
+		int16_t i16 = 0;
+		::memcpy(&i16, peek(), sizeof(i16));
+		return sockets::netToHost16(i16);
+	}
+
+	int8_t peekInt8() const {
+		assert(readableBytes() >= sizeof(int8_t));
+		int8_t x = *peek();
+		return x;
+	}
+
+	void retrieveAll() {
 		readerIndex_ = kCheapPrepend;
 		writerIndex_ = kCheapPrepend;
 	}
 
-	void readAdvance(size_t len) {
-		std::size_t gap = std::min(len, readableBytes());
-		readerIndex_ += gap;
-		if (readerIndex_ == writerIndex_) {
-			readAdanceAll();
+	void retrieve(size_t len) {
+		assert(len <= readableBytes());
+		if (len < readableBytes()) {
+			readerIndex_ += len;
+		} else {
+			retrieveAll();
 		}
 	}
 
-	char* writeBegin() {
-		return begin() + writerIndex_;
+	void retrieveInt64() {
+		retrieve(sizeof(int64_t));
 	}
 
-	const char* writeBegin() const {
-		return begin() + writerIndex_;
+	void retrieveInt32() {
+		retrieve(sizeof(int32_t));
 	}
 
+	void retrieveInt16() {
+		retrieve(sizeof(int16_t));
+	}
+
+	void retrieveInt8() {
+		retrieve(sizeof(int8_t));
+	}
+
+	int64_t readInt64() {
+		int64_t i64 = peekInt64();
+		retrieveInt64();
+		return i64;
+	}
+
+	int32_t readInt32() {
+		int32_t i32 = peekInt32();
+		retrieveInt32();
+		return i32;
+	}
+
+	int16_t readInt16() {
+		int16_t i16 = peekInt16();
+		retrieveInt16();
+		return i16;
+	}
+
+	int8_t readInt8() {
+		int8_t i8 = peekInt8();
+		retrieveInt8();
+		return i8;
+	}
+
+	void retrieveUntil(const char* end) {
+		assert(peek() <= end);
+		assert(end <= beginWrite());
+		retrieve(end - peek());
+	}
+
+	string retrieveAllAsString() {
+		return retrieveAsString(readableBytes());
+	}
+
+	string retrieveAsString(size_t len) {
+		assert(len <= readableBytes());
+		string ret(peek(), len);
+		retrieve(len);
+		return result;
+	}
+
+	StringView toStringView() const {
+		return StringView(peek(), readableBytes());
+	}
+
+	//
+	// write series functions
+	//
 	size_t writableBytes() const {
 		return buffer_.size() - writerIndex_;
 	}
 
-	void writeAdvance(size_t len) {
-		size_t gap = std::min(len, writableBytes());
-		writerIndex_ += gap;
+	char* beginWrite() {
+		return begin() + writerIndex_;
+	}
+
+	const char* beginWrite() const {
+		return begin() + writerIndex_;
+	}
+
+	void hasWritten(size_t len) {
+		assert(len <= writableBytes());
+		writerIndex_ += len;
+	}
+
+	void unwrite(size_t len) {
+		assert(len <= readableBytes());
+		writerIndex_ -= len;
 	}
 
 	void append(const char* data, size_t len) {
 		ensureWritableBytes(len);
 		std::copy(data, data + len, beginWrite());
-		writeAdvance(len);
+		hasWritten(len);
+	}
+
+	void append(const void* data, size_t len) {
+		append(static_cast<const char*>(data), len);
+	}
+
+	void append(const StringView& view) {
+		append(view.data(), view.size());
+	}
+
+	void append(const string& str) {
+		append(str.data(), str.size());
+	}
+
+	void appendInt64(int64_t x) {
+		int64_t be64 = sockets::hostToNet64(x);
+		append(&be64, sizeof(be64));
+	}
+
+	void appendInt32(int32_t x) {
+		int32_t be32 = sockets::hostToNet32(x);
+		append(&be32, sizeof(be32));
+	}
+
+	void appendInt16(int16_t x) {
+		int16_t be16 = sockets::hostToNet16(x);
+		append(&be16, sizeof(be16));
+	}
+
+	void appendInt8(int8_t x) {
+		append(&x, sizeof(x));
 	}
 
 	// like append but data from fd

@@ -17,11 +17,11 @@ ssize_t Buffer::readFd(int fd, int* saveErrno) {
 	iov[1].iov_len = sizeof(extrabuf);
 
 	const int iovcnt = (writable < sizeof(extrabuf)) ? 2 : 1;
-	const ssize_t n = posix::readv(fd, vec, iovcnt);
+	const ssize_t n = sockets::readv(fd, vec, iovcnt);
 	if (n < 0) {
 		*saveErrno = errno;
 	} else if (static_cast<size_t>(n) <= writable) {
-		writeAdvance(n);
+		hasWritten(n);
 	} else {
 		writerIndex_ = buffer_.size();
 		append(extrabuf, n - writable);

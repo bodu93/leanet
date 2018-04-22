@@ -2,6 +2,7 @@
 #define LEANET_SOCKETS_H
 
 #include <unistd.h> // ssize_t
+#include <stdint.h>
 #include <netinet/in.h>
 
 namespace sockets {
@@ -38,6 +39,8 @@ ssize_t write(int fd, const void* data, size_t len);
 ssize_t readv(int fd, const struct iovec* iov, int iovcnt);
 void close(int fd);
 
+uint64_t netToHost64(uint64_t n);
+uint64_t hostToNet64(uint64_t n);
 uint32_t netToHost32(uint32_t n);
 uint32_t hostToNet32(uint32_t n);
 uint16_t netToHost16(uint16_t n);
