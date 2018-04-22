@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include <leanet/types.h>
 #include <leanet/noncopyable.h>
 #include <leanet/date.h>
 
@@ -80,8 +81,8 @@ const int kSecondsPerDay = 24 * 60 * 60;
 struct TimeZone::Data {
 	std::vector<detail::Transition> transitions;
 	std::vector<detail::Localtime> localtimes;
-	std::vector<std::string> names;
-	std::string abbreviation;
+	std::vector<string> names;
+	string abbreviation;
 };
 
 namespace detail {
@@ -106,13 +107,13 @@ public:
 
 	bool valid() const { return fp_; }
 
-	std::string readBytes(int n) {
+	string readBytes(int n) {
 		char buf[n];
 		ssize_t rn = fread(buf, 1, n, fp_);
 		if (rn != n) {
 			throw std::logic_error("no enough data");
 		}
-		return std::string(buf, n);
+		return string(buf, n);
 	}
 
 	int32_t readInt32() {
@@ -143,11 +144,11 @@ bool parseTimeZoneFile(const char* fname, struct leanet::TimeZone::Data* data) {
 	File f(fname);
 	if (f.valid()) {
 		try {
-			std::string head = f.readBytes(4);
+			string head = f.readBytes(4);
 			if (head != "TZif") {
 				throw std::logic_error("bad head");
 			}
-			std::string version = f.readBytes(1);
+			string version = f.readBytes(1);
 			f.readBytes(15); // skip reserved bytes
 
 			int32_t isgmtcnt = f.readInt32();

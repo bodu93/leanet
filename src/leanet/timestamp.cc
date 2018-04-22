@@ -4,7 +4,7 @@
 
 namespace leanet {
 
-std::string Timestamp::toString() {
+string Timestamp::toString() {
 	int64_t seconds = microSecondsFromEpoch_ / kMicroSecondsPerSecond;
 	int64_t microseconds = microSecondsFromEpoch_ % kMicroSecondsPerSecond;
 	char buf[32] = {0};
@@ -12,7 +12,7 @@ std::string Timestamp::toString() {
 	return buf;
 }
 
-std::string Timestamp::toFormattedString(bool showMicroSeconds) const {
+string Timestamp::toFormattedString(bool showMicroSeconds) const {
 	time_t seconds = static_cast<time_t>(microSecondsFromEpoch_ / kMicroSecondsPerSecond);
 	struct tm tmt;
 	gmtime_r(&seconds, &tmt);

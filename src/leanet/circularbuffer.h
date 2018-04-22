@@ -2,9 +2,11 @@
 #define LEANET_CIRCULAR_BUFFER_H
 
 #include <assert.h>
-#include <string>
-#include <leanet/stringview.h>
+
 #include <algorithm> // std::copy
+
+#include <leanet/types.h>
+#include <leanet/stringview.h>
 
 namespace leanet {
 
@@ -108,7 +110,7 @@ public:
 		append(view.data(), view.size());
 	}
 
-	void append(const std::string& str) {
+	void append(const string& str) {
 		append(str.data(), str.size());
 	}
 
@@ -127,9 +129,9 @@ public:
 
 	// no retrieveAsStringView or retrieveAllAsStringView because of
 	// non-continuous buffer
-	std::string retrieveAsString(size_t len) {
+	string retrieveAsString(size_t len) {
 		len = std::min(readableBytes(), len);
-		std::string result;
+		string result;
 		result.reserve(len);
 		if (needRewind()) {
 			result.assign(beginRead(), bufferEnd());
@@ -142,7 +144,7 @@ public:
 		return result;
 	}
 
-	std::string retrieveAllAsString() {
+	string retrieveAllAsString() {
 		return retrieveAsString(readableBytes());
 	}
 

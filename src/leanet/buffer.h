@@ -9,6 +9,7 @@
 #include <vector>
 
 #include <leanet/copyable.h>
+#include <leanet/sockets.h>
 #include <leanet/stringview.h>
 
 namespace leanet {

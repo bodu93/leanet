@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <string>
 #include <utility> // std::swap since C++11
+
+#include <leanet/types.h>
 #include <leanet/copyable.h>
 
 namespace leanet {
@@ -20,9 +22,9 @@ public:
 	}
 
 	// format: "<seconds>.<micro-seconds>"
-	std::string toString() const;
+	string toString() const;
 	// calendar time to broken-down time
-	std::string toFormattedString(bool showMicroSeconds = true) const;
+	string toFormattedString(bool showMicroSeconds = true) const;
 
 	bool valid() const { return microSecondsFromEpoch_ > 0; };
 

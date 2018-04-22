@@ -2,7 +2,8 @@
 #define LEANET_STRING_VIEW_H
 
 #include <string.h> // strlen
-#include <string>
+
+#include <leanet/types.h>
 
 namespace leanet {
 
@@ -22,7 +23,7 @@ public:
 			length_(static_cast<size_t>(strlen(cstr)))
 	{ }
 
-	StringView(const std::string& str)
+	StringView(const string& str)
 		: data_(str.c_str()),
 			length_(str.size())
 	{ }
@@ -46,8 +47,8 @@ public:
 	const char* end() const
 	{ return begin() + size(); }
 
-	std::string toString() const {
-		return std::string(data_, length_);
+	string toString() const {
+		return string(data_, length_);
 	}
 };
 

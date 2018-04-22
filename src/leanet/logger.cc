@@ -1,6 +1,7 @@
 #include <leanet/logger.h>
 
 #include <errno.h>
+
 #include <stdio.h>
 #include <stdlib.h> // getenv
 #include <string.h> // strerror_r

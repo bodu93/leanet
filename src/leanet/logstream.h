@@ -3,8 +3,8 @@
 
 #include <assert.h>
 #include <string.h> // bzero
-#include <string>
 
+#include <leanet/types.h>
 #include <leanet/noncopyable.h>
 #include <leanet/stringview.h>
 
@@ -54,7 +54,7 @@ public:
 	void rewind() { cur_ = buffer_; }
 	void bzero() { ::bzero(buffer_, SIZE); }
 
-	std::string toString() const { return std::string(buffer_, SIZE); }
+	string toString() const { return string(buffer_, SIZE); }
 	StringView toStringView() const { return StringView(buffer_, SIZE); }
 };
 
@@ -128,7 +128,7 @@ public:
 		return operator<<(reinterpret_cast<const char*>(str));
 	}
 
-	self& operator<<(const std::string& v) {
+	self& operator<<(const string& v) {
 		buffer_.append(v.c_str(), v.size());
 		return *this;
 	}

@@ -51,10 +51,10 @@ struct ThreadData {
 	typedef leanet::Thread::ThreadFunc ThreadFunc;
 
 	ThreadFunc func;
-	std::string name;
+	string name;
 	CountdownLatch* platch;
 
-	explicit ThreadData(const ThreadFunc& func, const std::string& name, CountdownLatch* latch)
+	explicit ThreadData(const ThreadFunc& func, const string& name, CountdownLatch* latch)
 		: func(func),
 			name(name),
 			platch(latch)
@@ -106,7 +106,7 @@ bool isMainThread() {
 } // namespace leanet::currentThread
 
 AtomicInt32 Thread::threadsCreated_;
-Thread::Thread(const ThreadFunc& func, const std::string& name)
+Thread::Thread(const ThreadFunc& func, const string& name)
 	: threadFunc_(func),
 		threadName_(name),
 		started_(false),

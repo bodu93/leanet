@@ -1,6 +1,7 @@
 #ifndef LEANET_DATE_H
 #define LEANET_DATE_H
 
+#include <leanet/types.h>
 #include <leanet/copyable.h>
 
 struct tm;
@@ -45,7 +46,7 @@ public:
 	bool valid() const
 	{ return julianDateNumber_ > 0; }
 
-	std::string toIsoString() const;
+	string toIsoString() const;
 
 	struct YearMonthDay yearMonthDay() const;
 
