@@ -27,6 +27,7 @@
 *~
 *.swp
 .DS_store
+.*
 
 # TODO files
 TODO
