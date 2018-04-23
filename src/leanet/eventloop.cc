@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#include <leanet/logger.h>
+
 using namespace leanet;
 
 __thread EventLoop* t_loopInThisThread = 0;
@@ -12,8 +14,8 @@ EventLoop::EventLoop()
 	: looping_(false),
 		threadId_(currentThread::tid()) {
 	if (t_loopInThisThread) {
-		// FIXME
-		abort();
+		LOG_FATAL << "Another EventLoop " << t_loopInThisThread
+							<< " exists in this thread " << threadId_;
 	} else {
 		t_loopInThisThread = this;
 	}
@@ -29,8 +31,9 @@ EventLoop* EventLoop::getEventLoopOfCurrentThread() {
 }
 
 void EventLoop::abortNotInLoopThread() {
-	// FIXME
-	abort();
+	LOG_FATAL << "EventLoop::abortNotInLoopThread - EventLoop " << this
+						<< " was created in threadId_ = " << threadId_
+						<< ", current thread id = " << currentThread::tid();
 }
 
 void EventLoop::loop() {

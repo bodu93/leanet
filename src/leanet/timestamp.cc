@@ -1,14 +1,15 @@
 #include <leanet/timestamp.h>
 #include <time.h>
+#include <sys/time.h>
 #include <utility> // std::swap since C++11
 
 namespace leanet {
 
-string Timestamp::toString() {
+string Timestamp::toString() const {
 	int64_t seconds = microSecondsFromEpoch_ / kMicroSecondsPerSecond;
 	int64_t microseconds = microSecondsFromEpoch_ % kMicroSecondsPerSecond;
 	char buf[32] = {0};
-	snprintf(buf, sizeof(buf) - 1, "%lld.%06lld", seconds, microsecnds);
+	snprintf(buf, sizeof(buf) - 1, "%lld.%06lld", seconds, microseconds);
 	return buf;
 }
 
@@ -43,7 +44,7 @@ string Timestamp::toFormattedString(bool showMicroSeconds) const {
 Timestamp Timestamp::now() {
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
-	int64 ms = tv.tv_sec * Timestamp::kMicroSecondsPerSecond + tv.tv_usec;
+	int64_t ms = tv.tv_sec * Timestamp::kMicroSecondsPerSecond + tv.tv_usec;
 	return Timestamp(ms);
 }
 

@@ -1,10 +1,11 @@
 #include <leanet/sockets.h>
 
 #include <unistd.h>
+//#include <endian.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+#include <arpa/inet.h> // ntoh* and hton*
 #include <sys/socket.h>
 #include <sys/uio.h>
 
@@ -51,7 +52,9 @@ int createNonblockingOrDie(sa_family_t family) {
 	}
 	setNonBlockAndCloseOnExec(sockfd);
 #else
-	int sockfd = ::socket(family, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+	//int sockfd = ::socket(family, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+	int sockfd = ::socket(family, SOCK_STREAM, IPPROTO_TCP);
+	setNonBlockAndCloseOnExec(sockfd);
 	if (sockfd < 0) {
 		LOG_SYSFATAL << "sockets::createNonblockingOrDie";
 	}
@@ -158,7 +161,7 @@ const struct sockaddr* sockaddr_cast(const struct sockaddr_in6* addr) {
 	return static_cast<const struct sockaddr*>(implicit_cast<const void*>(addr));
 }
 
-const struct sockaddr* sockaddr_cast(struct sockaddr_in6* addr) {
+struct sockaddr* sockaddr_cast(struct sockaddr_in6* addr) {
 	return static_cast<struct sockaddr*>(implicit_cast<void*>(addr));
 }
 
@@ -222,7 +225,7 @@ int getSocketError(int sockfd) {
 	int optval;
 	socklen_t optlen = static_cast<socklen_t>(sizeof(optval));
 
-	if (::getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &optval, &opelen) < 0) {
+	if (::getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0) {
 		return errno;
 	} else {
 		return optval;
@@ -285,29 +288,29 @@ void close(int sockfd) {
 }
 
 uint64_t netToHost64(uint64_t n) {
-	// TODO
-	return 0;
+	//FIXME: on Linux
+	return ntohll(n);
 }
 
 uint64_t hostToNet64(uint64_t n) {
-	// TODO
-	return 0;
+	//FIXME: on Linux, use be64toh
+	return htonll(n);
 }
 
 uint32_t netToHost32(uint32_t n) {
-	return ::ntohl(n);
+	return ntohl(n);
 }
 
 uint32_t hostToNet32(uint32_t n) {
-	return ::htonl(n);
+	return htonl(n);
 }
 
 uint16_t netToHost16(uint16_t n) {
-	return ::ntohs(n);
+	return ntohs(n);
 }
 
 uint16_t hostToNet16(uint16_t n) {
-	return ::htons(n);
+	return htons(n);
 }
 
 }

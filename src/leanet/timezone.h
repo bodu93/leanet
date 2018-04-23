@@ -17,7 +17,7 @@ public:
 	// implicit copy-control members are okay
 
 	bool valid() const
-	{ return data_; }
+	{ return static_cast<bool>(data_); }
 
 	// localtime(3): struct tm* localtime(const time_t* clock)
 	struct tm toLocalTime(time_t secondsSinceEpoch) const;

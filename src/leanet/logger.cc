@@ -15,7 +15,10 @@ namespace leanet {
 
 __thread char t_errnobuf[512];
 const char* strerror_tl(int save_errno) {
-	return strerror_r(save_errno, t_errnobuf, sizeof(t_errnobuf));
+	// FIXME : macOS returned a int, but linux returned char*
+	int err = strerror_r(save_errno, t_errnobuf, sizeof(t_errnobuf));
+	Unused(err);
+	return t_errnobuf;
 }
 
 Logger::LogLevel initLogLevel() {
@@ -63,7 +66,7 @@ inline LogStream& operator<<(LogStream& s, const Logger::SourceFile& v) {
 
 Logger::Impl::Impl(
 		LogLevel level,
-		int old_errno,
+		int savedErrno,
 		const SourceFile& file,
 		int line)
 	: time_(Timestamp::now()),
@@ -80,9 +83,9 @@ Logger::Impl::Impl(
 	currentThread::tid();
 	stream_ << StringHelper(currentThread::tidString(), currentThread::tidStringLength());
 	stream_ << StringHelper(LogLevelNames[level_], 6);
-	if (save_errno != 0) {
-		stream_ << strerror_tl(save_errno)
-						<< " (errno = " << save_errno << ") ";
+	if (savedErrno != 0) {
+		stream_ << strerror_tl(savedErrno)
+						<< " (errno = " << savedErrno << ") ";
 	}
 }
 
@@ -90,7 +93,7 @@ TimeZone g_timezone;
 __thread char t_time[32];
 __thread time_t t_lastSecond;
 void Logger::Impl::formatTime() {
-	int64_t microSecondsSinceEpoch = time_.microSecondsSinceEpoch();
+	int64_t microSecondsFromEpoch = time_.microSecondsFromEpoch();
 	int seconds = microSecondsFromEpoch / Timestamp::kMicroSecondsPerSecond;
 	int microseconds = microSecondsFromEpoch % Timestamp::kMicroSecondsPerSecond;
 	// if output log message in one second, we use t_time
@@ -101,7 +104,8 @@ void Logger::Impl::formatTime() {
 		if (g_timezone.valid()) {
 			tmt = g_timezone.toLocalTime(seconds);
 		} else {
-			::gmtime_r(&seconds, &tmt);
+			time_t t = seconds;
+			::gmtime_r(&t, &tmt);
 		}
 
 		int len = snprintf(t_time, sizeof(t_time),
@@ -113,7 +117,7 @@ void Logger::Impl::formatTime() {
 				tmt.tm_min,
 				tmt.tm_sec);
 		assert(len == 17);
-		(void)len;
+		Unused(len);
 	}
 
 	if (g_timezone.valid()) {
@@ -170,7 +174,7 @@ Logger::Logger(SourceFile file, int line, bool to_abort)
 Logger::~Logger() {
 	impl_.finish();
 	const LogStream::Buffer& buffer(stream().buffer());
-	g_output(buffer.data(), buffer.length());
+	g_output(buffer.buffer(), buffer.length());
 	if (impl_.level_ == FATAL) {
 		g_flush();
 		abort();

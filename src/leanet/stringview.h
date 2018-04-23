@@ -3,9 +3,28 @@
 
 #include <string.h> // strlen
 
+#include <leanet/copyable.h>
 #include <leanet/types.h>
 
 namespace leanet {
+
+class StringArg: public copyable {
+public:
+	StringArg(const char* str)
+		: str_(str)
+	{ }
+
+	StringArg(const string& s)
+		: str_(s.c_str())
+	{ }
+
+	const char* c_str() const {
+		return str_;
+	}
+
+private:
+	const char* str_;
+};
 
 // a proxy of string
 class StringView {

@@ -10,7 +10,7 @@ namespace currentThread {
 extern __thread uint64_t t_cachedTid;
 extern __thread const char* t_threadName;
 // for logging
-extern __thread int t_tidString[32];
+extern __thread char t_tidString[32];
 extern __thread int t_tidStringLength;
 
 void cacheTid();

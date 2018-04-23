@@ -1,6 +1,7 @@
 #include <leanet/timezone.h>
 
-#include <endian.h>  // be32toh
+//#include <endian.h>  // be32toh
+#include <arpa/inet.h> // ntohs
 #include <stdint.h>
 #include <stdio.h>
 #include <strings.h> // bzero
@@ -70,7 +71,7 @@ struct Localtime {
 	int arrbIdx;
 
 	Localtime(time_t offset, bool dst, int arrb)
-		: gmOffset(offset), isDst(dst), arrIdx(arrb)
+		: gmtOffset(offset), isDst(dst), arrbIdx(arrb)
 	{ }
 };
 
@@ -107,9 +108,9 @@ public:
 
 	bool valid() const { return fp_; }
 
-	string readBytes(int n) {
+	string readBytes(size_t n) {
 		char buf[n];
-		ssize_t rn = fread(buf, 1, n, fp_);
+		size_t rn = fread(buf, 1, n, fp_);
 		if (rn != n) {
 			throw std::logic_error("no enough data");
 		}
@@ -118,16 +119,16 @@ public:
 
 	int32_t readInt32() {
 		int32_t x = 0;
-		ssize_t rn = fread(&x, 1, sizeof(int32_t), fp_);
+		size_t rn = fread(&x, 1, sizeof(int32_t), fp_);
 		if (rn != sizeof(int32_t)) {
 			throw std::logic_error("bad int32_t data");
 		}
-		return be32toh(x);
+		return ntohl(static_cast<uint32_t>(x));
 	}
 
 	uint8_t readUInt8() {
 		uint8_t x = 0;
-		ssize_t rn = fread(&x, 1, sizeof(uint8_t), fp_);
+		size_t rn = fread(&x, 1, sizeof(uint8_t), fp_);
 		if (rn != sizeof(uint8_t)) {
 			throw std::logic_error("bad uint8_t data");
 		}
@@ -174,16 +175,17 @@ bool parseTimeZoneFile(const char* fname, struct leanet::TimeZone::Data* data) {
 				int32_t gmoff = f.readInt32();
 				uint8_t isdst = f.readUInt8();
 				uint8_t abbridx = f.readUInt8();
-				data->localtimes.push_back(Localtime(gmtoff, isdst, abbridx));
+				data->localtimes.push_back(Localtime(gmoff, isdst, abbridx));
 			}
 
 			for(int i=0;i<timecnt;++i) {
 				int localidx = localtimes[i];
-				time_t localtime = trans[i] + data->localtimes[localidx].gmOffset;
+				time_t localtime = trans[i] + data->localtimes[localidx].gmtOffset;
 				data->transitions.push_back(Transition(trans[i], localtime, localidx));
 			}
 
 			data->abbreviation = f.readBytes(charcnt);
+			Unused(isgmtcnt, isstdcnt, leapcnt);
 		} catch (const std::logic_error& e) {
 			fprintf(stderr, "%s\n", e.what());
 		}
@@ -236,7 +238,7 @@ TimeZone::TimeZone(int eastOfUTC, const char* name)
 struct tm TimeZone::toLocalTime(time_t seconds) const {
 	struct tm localTime;
 	bzero(&localTime, sizeof(localTime));
-	assert(data_ != NULL);
+	assert(data_ != nullptr);
 	const Data& data(*data_);
 
 	detail::Transition sentry(seconds, 0, 0);
@@ -248,7 +250,7 @@ struct tm TimeZone::toLocalTime(time_t seconds) const {
 		gmtime_r(&localSeconds, &localTime);
 		localTime.tm_isdst = local->isDst;
 		localTime.tm_gmtoff = local->gmtOffset;
-		localTime.tm_zone = &data.abbreviation[local->abbridx];
+		localTime.tm_zone = const_cast<char*>(&data.abbreviation[local->arrbIdx]);
 	}
 
 	return localTime;
@@ -278,7 +280,10 @@ time_t TimeZone::fromLocalTime(const struct tm& localTm) const {
 struct tm TimeZone::toUtcTime(time_t secondsSinceEpoch, bool yday) {
 	struct tm utc;
 	bzero(&utc, sizeof(utc));
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wwritable-strings"
 	utc.tm_zone = "GMT";
+#pragma GCC diagnostic pop
 	int seconds = static_cast<int>(secondsSinceEpoch % kSecondsPerDay);
 	int days = static_cast<int>(secondsSinceEpoch / kSecondsPerDay);
 	if (seconds < 0) {
@@ -309,7 +314,7 @@ time_t TimeZone::fromUtcTime(int year, int month, int day,
 														 int hour, int minute, int seconds) {
 	Date date(year, month, day);
 	int secondsInDay = hour * 3600 + minute * 60 + seconds;
-	time_t days = date.julianDayNumber() - Date::kJulianDayOf1970_01_01;
+	time_t days = date.julianDateNumber() - Date::kJulianDayOf1970_01_01;
 	return days * kSecondsPerDay + secondsInDay;
 }
 

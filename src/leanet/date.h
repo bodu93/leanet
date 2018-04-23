@@ -72,11 +72,11 @@ public:
 };
 
 inline bool operator<(Date lhs, Date rhs) {
-	return x.julianDayNumber() < y.julianDateNumber();
+	return lhs.julianDateNumber() < rhs.julianDateNumber();
 }
 
 inline bool operator==(Date lhs, Date rhs) {
-	return x.julianDateNumber() == y.julianDateNumber();
+	return lhs.julianDateNumber() == rhs.julianDateNumber();
 }
 
 } // namespace leanet

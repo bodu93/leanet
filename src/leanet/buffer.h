@@ -62,7 +62,7 @@ public:
 		assert(len <= prependableBytes());
 		readerIndex_ -= len;
 		const char* d = static_cast<const char*>(data);
-		std::copy(d, d + len, begin() + readerIndex_());
+		std::copy(d, d + len, begin() + readerIndex_);
 	}
 
 	void prependInt64(int64_t x) {
@@ -98,7 +98,7 @@ public:
 
 	int64_t peekInt64() const {
 		assert(readableBytes() >= sizeof(int64_t));
-		int64 i64 = 0;
+		int64_t i64 = 0;
 		::memcpy(&i64, peek(), sizeof(i64));
 		return sockets::netToHost64(i64);
 	}
@@ -191,7 +191,7 @@ public:
 		assert(len <= readableBytes());
 		string ret(peek(), len);
 		retrieve(len);
-		return result;
+		return ret;
 	}
 
 	StringView toStringView() const {
@@ -275,7 +275,7 @@ private:
 		return &*buffer_.begin();
 	}
 
-	const char* begin() {
+	const char* begin() const {
 		return &*buffer_.begin();
 	}
 
@@ -302,5 +302,7 @@ private:
 
 	static const char kCRLF[];
 };
+
+}
 
 #endif // LEANET_BUFFER_H

@@ -36,11 +36,11 @@ struct Date::YearMonthDay getYearMonthDay(int julianDayNumber) {
 const int Date::kJulianDayOf1970_01_01 = detail::getJulianDayNumber(1970, 1, 1);
 
 Date::Date(int y, int m, int d)
-	: julianDayNumber_(detail::getJulianDayNumber(y, m, d))
+	: julianDateNumber_(detail::getJulianDayNumber(y, m, d))
 { }
 
-Date::Date(const struct tmY t)
-	: julianDayNumber_(detail::getJulianDayNumber(
+Date::Date(const struct tm& t)
+	: julianDateNumber_(detail::getJulianDayNumber(
 				t.tm_year+1900,
 				t.tm_mon+1,
 				t.tm_mday))
@@ -54,7 +54,7 @@ std::string Date::toIsoString() const {
 }
 
 Date::YearMonthDay Date::yearMonthDay() const {
-	return detail::getYearMonthDay(julianDayNumber_);
+	return detail::getYearMonthDay(julianDateNumber_);
 }
 
 } // namespace leanet

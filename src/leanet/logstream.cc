@@ -11,8 +11,8 @@ namespace detail {
 
 template<size_t SIZE> void FixedBuffer<SIZE>::cookieStart() { }
 template<size_t SIZE> void FixedBuffer<SIZE>::cookieEnd() { }
-template class FixedBuffer<leanet::LogStream::kSmallBuffer>;
-//template class FixedBuffer<leanet::LogStream::kLargeBuffer>;
+template class FixedBuffer<leanet::LogStream::kSmallBufferSize>;
+//template class FixedBuffer<leanet::LogStream::kLargeBufferSize>;
 
 const char digits[] = "9876543210123456789";
 const char* zero = digits + 9;
@@ -55,10 +55,12 @@ size_t convertHex(char buf[], uintptr_t value) {
 	return p - buf;
 }
 
+}
+
 template<typename T>
 Fmt::Fmt(const char* fmt, T val) {
 	length_ = snprintf(buf_, sizeof(buf_), fmt, val);
-	assert(length_ < sizeof(buf_));
+	assert(static_cast<size_t>(length_) < sizeof(buf_));
 }
 
 // explicit instantiations
@@ -74,21 +76,13 @@ template Fmt::Fmt(const char* fmt, unsigned long long);
 template Fmt::Fmt(const char* fmt, float);
 template Fmt::Fmt(const char* fmt, double);
 
-}
-
 template<typename T>
 void LogStream::appendInteger(T val) {
 	if (buffer_.avail() >= kMaxNumericSize) {
-		size_t len = convert(buffer_.current(), val);
+		size_t len = detail::convert(buffer_.current(), val);
 		buffer_.advance(len);
 	}
 }
-template LogStream::appendInteger(int val);
-template LogStream::appendInteger(unsigned int val);
-template LogStream::appendInteger(long val);
-template LogStream::appendInteger(unsigned long val);
-template LogStream::appendInteger(long long val);
-template LogStream::appendInteger(unsigned long long val);
 
 LogStream& LogStream::operator<<(short v) {
 	*this << static_cast<int>(v);
@@ -136,7 +130,7 @@ LogStream& LogStream::operator<<(const void* p) {
 		char* buf = buffer_.current();
 		buf[0] = '0';
 		buf[1] = 'x';
-		size_t len = convertHex(buf+2, v);
+		size_t len = detail::convertHex(buf+2, v);
 		buffer_.advance(len);
 	}
 	return *this;

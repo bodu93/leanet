@@ -43,6 +43,8 @@ public:
 		}
 	}
 
+	void setCookie(void (*x)()) { cookie_ = x; }
+
 	const char* buffer() const { return buffer_; }
 	size_t length() const { return static_cast<size_t>(cur_ - buffer_); }
 
@@ -134,7 +136,7 @@ public:
 	}
 
 	self& operator<<(const StringView& v) {
-		buffer_.append(v.data(), v.length());
+		buffer_.append(v.data(), v.size());
 		return *this;
 	}
 

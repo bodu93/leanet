@@ -13,6 +13,9 @@
 
 namespace leanet {
 
+template<typename ... T>
+void Unused(T&& ...) { }
+
 #ifdef LEANET_STD_STRING
 using std::string;
 #else

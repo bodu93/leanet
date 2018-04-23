@@ -31,7 +31,7 @@ public:
 	int64_t microSecondsFromEpoch() const
 	{ return microSecondsFromEpoch_; }
 	time_t secondsFromEpoch() const
-	{ return static_cast<time_t>(microSecondsFromEpoch_ / kMicroSecondsPerSecond; }
+	{ return static_cast<time_t>(microSecondsFromEpoch_ / kMicroSecondsPerSecond); }
 
 	static Timestamp now();
 	static Timestamp invalid()

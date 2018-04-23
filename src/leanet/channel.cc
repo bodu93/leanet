@@ -34,5 +34,5 @@ void Channel::handleEvent() {
 
 void Channel::update() {
 	assert(loop_);
-	loop_->updateChannel(this);
+	//loop_->updateChannel(this);
 }

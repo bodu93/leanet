@@ -88,8 +88,7 @@ void cacheTid() {
 	if (t_cachedTid == 0) {
 		t_cachedTid = detail::gettid();
 		// cache tid string and tid length for logging
-		t_tidStringLength = snprintf(t_tidString, sizeof(t_tidString),
-				"%5u ", t_cachedTid);
+		t_tidStringLength = snprintf(t_tidString, sizeof(t_tidString), "%5llu ", t_cachedTid);
 	}
 }
 
@@ -127,7 +126,7 @@ void Thread::setDefaultName() {
 	int count = threadsCreated_.incrementAndGet();
 	if (threadName_.empty()) {
 		char buf[32];
-		snprintf(buf, sizeof(buf), "Thread%d", num);
+		snprintf(buf, sizeof(buf), "Thread%d", count);
 		threadName_ = buf;
 	}
 }

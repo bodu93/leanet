@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc ../../lib/libleanet.a  CMakeFiles/leanet.dir/timestamp.cc.o CMakeFiles/leanet.dir/timezone.cc.o CMakeFiles/leanet.dir/date.cc.o CMakeFiles/leanet.dir/thread.cc.o CMakeFiles/leanet.dir/logstream.cc.o CMakeFiles/leanet.dir/logger.cc.o CMakeFiles/leanet.dir/buffer.cc.o CMakeFiles/leanet.dir/sockets.cc.o CMakeFiles/leanet.dir/channel.cc.o CMakeFiles/leanet.dir/eventloop.cc.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib ../../lib/libleanet.a
