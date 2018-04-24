@@ -1,1 +1,0 @@
-clang++  -g -Wall -Wextra -Werror -std=c++11 -DLEANET_STD_STRING -DCHECK_PTHREAD_RETURN_VALUE -D_FILE_OFFSET_BITS=64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/eventloop_test.dir/eventloop_test.cc.o  -o ../../bin/eventloop_test ../../lib/libleanet.a -lpthread 
