@@ -45,17 +45,17 @@ public:
 	}
 
 	// void enableWriting() {
-	// events_ |= kWriteEvent;
+	// interestedEvents_ |= kWriteEvent;
 	// update();
 	// }
 	//
 	// void disableWriting() {
-	// events_ &= ~kWriteEvent;
+	// interestedEvents_ &= ~kWriteEvent;
 	// update();
 	// }
 	//
 	// void disableAll() {
-	// events_ = kNoneEvent;
+	// interestedEvents_ = kNoneEvent;
 	// update();
 	// }
 
