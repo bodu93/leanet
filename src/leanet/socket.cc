@@ -5,7 +5,7 @@
 #include <strings.h>
 #include <stdio.h>
 
-#include <leanet/InetAddress.h>
+#include <leanet/inetaddress.h>
 #include <leanet/sockets.h>
 #include <leanet/logger.h>
 

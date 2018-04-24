@@ -29,15 +29,18 @@ public:
 	{ errorCallback_ = cb; }
 
 	int fd() const { return fd_; }
-	int events() const
-	{ return events_; }
-	void set_revents(int revents)
-	{ revents_ = revents; }
+
+	int interestedEvents() const
+	{ return interestedEvents_; }
+
+	void setReceivedEvents(int revents)
+	{ receivedEvents_ = revents; }
+
 	bool isNoneEvent() const
-	{ return events_ == kNoneEvent; }
+	{ return interestedEvents_ == kNoneEvent; }
 
 	void enableReading() {
-		events_ |= kReadEvent;
+		interestedEvents_ |= kReadEvent;
 		update();
 	}
 
@@ -58,7 +61,7 @@ public:
 
 	// for poller
 	int index() { return index_; }
-	void set_index(int idx) { index_ = idx; }
+	void setIndex(int idx) { index_ = idx; }
 	EventLoop* ownerLoop() { return loop_; }
 
 private:
@@ -70,8 +73,10 @@ private:
 
 	EventLoop* loop_;
 	const int fd_;
-	int events_;
-	int revents_;
+
+	int interestedEvents_;
+	int receivedEvents_;
+
 	int index_; // used by poller
 
 	EventCallback readCallback_;

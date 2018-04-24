@@ -18,6 +18,7 @@ set(SRCS
 	socket.cc
 	inetaddress.cc
 	channel.cc
+	poller.cc
 	eventloop.cc
 	)
 
