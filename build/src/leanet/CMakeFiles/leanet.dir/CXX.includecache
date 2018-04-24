@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+../src/leanet/InetAddress.h
+netinet/in.h
+-
+leanet/copyable.h
+-
+leanet/stringview.h
+-
+
 ../src/leanet/atomic.h
 leanet/noncopyable.h
 -
@@ -74,6 +82,14 @@ leanet/noncopyable.h
 leanet/currentthread.h
 -
 
+../src/leanet/inetaddress.h
+netinet/in.h
+-
+leanet/copyable.h
+-
+leanet/stringview.h
+-
+
 ../src/leanet/logger.h
 leanet/types.h
 -
@@ -104,6 +120,10 @@ leanet/noncopyable.h
 
 ../src/leanet/noncopyable.h
 
+../src/leanet/socket.h
+leanet/noncopyable.h
+-
+
 ../src/leanet/sockets.h
 unistd.h
 -
@@ -114,6 +134,8 @@ netinet/in.h
 
 ../src/leanet/stringview.h
 string.h
+-
+leanet/copyable.h
 -
 leanet/types.h
 -
@@ -206,6 +228,20 @@ stdlib.h
 leanet/logger.h
 -
 
+/Users/bodu/codes/gits/leanet/src/leanet/inetaddress.cc
+leanet/inetaddress.h
+-
+netinet/in.h
+-
+netdb.h
+-
+strings.h
+-
+leanet/sockets.h
+-
+leanet/logger.h
+-
+
 /Users/bodu/codes/gits/leanet/src/leanet/logger.cc
 leanet/logger.h
 -
@@ -236,6 +272,24 @@ stdio.h
 assert.h
 -
 algorithm
+-
+
+/Users/bodu/codes/gits/leanet/src/leanet/socket.cc
+leanet/socket.h
+-
+netinet/in.h
+-
+netinet/tcp.h
+-
+strings.h
+-
+stdio.h
+-
+leanet/InetAddress.h
+-
+leanet/sockets.h
+-
+leanet/logger.h
 -
 
 /Users/bodu/codes/gits/leanet/src/leanet/sockets.cc

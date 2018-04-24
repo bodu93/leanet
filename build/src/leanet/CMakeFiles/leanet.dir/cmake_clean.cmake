@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/leanet.dir/logger.cc.o"
   "CMakeFiles/leanet.dir/buffer.cc.o"
   "CMakeFiles/leanet.dir/sockets.cc.o"
+  "CMakeFiles/leanet.dir/socket.cc.o"
+  "CMakeFiles/leanet.dir/inetaddress.cc.o"
   "CMakeFiles/leanet.dir/channel.cc.o"
   "CMakeFiles/leanet.dir/eventloop.cc.o"
   "../../lib/libleanet.pdb"

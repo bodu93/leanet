@@ -10,7 +10,7 @@
 // namespace member forward declarations
 //
 namespace sockets {
-	struct sockaddr* sockaddr_cast(const struct sockaddr_in6* addr);
+	const struct sockaddr* sockaddr_cast(const struct sockaddr_in6* addr);
 }
 
 namespace leanet {
@@ -40,6 +40,8 @@ public:
 	// ipv4
 	uint16_t portNetOrder() const { return addr_.sin_port; }
 
+	// static bool resolve(StringArg hostname, StringArg servicename,
+	// 										InetAddress* result);
 	static bool resolve(StringArg hostname, InetAddress* result);
 
 private:

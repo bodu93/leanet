@@ -249,9 +249,57 @@ src/leanet/CMakeFiles/leanet.dir/sockets.cc.o.provides: src/leanet/CMakeFiles/le
 src/leanet/CMakeFiles/leanet.dir/sockets.cc.o.provides.build: src/leanet/CMakeFiles/leanet.dir/sockets.cc.o
 
 
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: src/leanet/CMakeFiles/leanet.dir/flags.make
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/socket.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/leanet/CMakeFiles/leanet.dir/socket.cc.o"
+	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/leanet.dir/socket.cc.o -c /Users/bodu/codes/gits/leanet/src/leanet/socket.cc
+
+src/leanet/CMakeFiles/leanet.dir/socket.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/leanet.dir/socket.cc.i"
+	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/bodu/codes/gits/leanet/src/leanet/socket.cc > CMakeFiles/leanet.dir/socket.cc.i
+
+src/leanet/CMakeFiles/leanet.dir/socket.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/leanet.dir/socket.cc.s"
+	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/bodu/codes/gits/leanet/src/leanet/socket.cc -o CMakeFiles/leanet.dir/socket.cc.s
+
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o.requires:
+
+.PHONY : src/leanet/CMakeFiles/leanet.dir/socket.cc.o.requires
+
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o.provides: src/leanet/CMakeFiles/leanet.dir/socket.cc.o.requires
+	$(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/socket.cc.o.provides.build
+.PHONY : src/leanet/CMakeFiles/leanet.dir/socket.cc.o.provides
+
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o.provides.build: src/leanet/CMakeFiles/leanet.dir/socket.cc.o
+
+
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: src/leanet/CMakeFiles/leanet.dir/flags.make
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/inetaddress.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o"
+	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/leanet.dir/inetaddress.cc.o -c /Users/bodu/codes/gits/leanet/src/leanet/inetaddress.cc
+
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/leanet.dir/inetaddress.cc.i"
+	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/bodu/codes/gits/leanet/src/leanet/inetaddress.cc > CMakeFiles/leanet.dir/inetaddress.cc.i
+
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/leanet.dir/inetaddress.cc.s"
+	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/bodu/codes/gits/leanet/src/leanet/inetaddress.cc -o CMakeFiles/leanet.dir/inetaddress.cc.s
+
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.requires:
+
+.PHONY : src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.requires
+
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.provides: src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.requires
+	$(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.provides.build
+.PHONY : src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.provides
+
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.provides.build: src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o
+
+
 src/leanet/CMakeFiles/leanet.dir/channel.cc.o: src/leanet/CMakeFiles/leanet.dir/flags.make
 src/leanet/CMakeFiles/leanet.dir/channel.cc.o: ../src/leanet/channel.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object src/leanet/CMakeFiles/leanet.dir/channel.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object src/leanet/CMakeFiles/leanet.dir/channel.cc.o"
 	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/leanet.dir/channel.cc.o -c /Users/bodu/codes/gits/leanet/src/leanet/channel.cc
 
 src/leanet/CMakeFiles/leanet.dir/channel.cc.i: cmake_force
@@ -275,7 +323,7 @@ src/leanet/CMakeFiles/leanet.dir/channel.cc.o.provides.build: src/leanet/CMakeFi
 
 src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o: src/leanet/CMakeFiles/leanet.dir/flags.make
 src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o: ../src/leanet/eventloop.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o"
 	cd /Users/bodu/codes/gits/leanet/build/src/leanet && clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/leanet.dir/eventloop.cc.o -c /Users/bodu/codes/gits/leanet/src/leanet/eventloop.cc
 
 src/leanet/CMakeFiles/leanet.dir/eventloop.cc.i: cmake_force
@@ -307,6 +355,8 @@ leanet_OBJECTS = \
 "CMakeFiles/leanet.dir/logger.cc.o" \
 "CMakeFiles/leanet.dir/buffer.cc.o" \
 "CMakeFiles/leanet.dir/sockets.cc.o" \
+"CMakeFiles/leanet.dir/socket.cc.o" \
+"CMakeFiles/leanet.dir/inetaddress.cc.o" \
 "CMakeFiles/leanet.dir/channel.cc.o" \
 "CMakeFiles/leanet.dir/eventloop.cc.o"
 
@@ -321,11 +371,13 @@ lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/logstream.cc.o
 lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/logger.cc.o
 lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/buffer.cc.o
 lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/sockets.cc.o
+lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/socket.cc.o
+lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o
 lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/channel.cc.o
 lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o
 lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/build.make
 lib/libleanet.a: src/leanet/CMakeFiles/leanet.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX static library ../../lib/libleanet.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/bodu/codes/gits/leanet/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX static library ../../lib/libleanet.a"
 	cd /Users/bodu/codes/gits/leanet/build/src/leanet && $(CMAKE_COMMAND) -P CMakeFiles/leanet.dir/cmake_clean_target.cmake
 	cd /Users/bodu/codes/gits/leanet/build/src/leanet && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/leanet.dir/link.txt --verbose=$(VERBOSE)
 
@@ -342,6 +394,8 @@ src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/logs
 src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/logger.cc.o.requires
 src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/buffer.cc.o.requires
 src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/sockets.cc.o.requires
+src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/socket.cc.o.requires
+src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o.requires
 src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/channel.cc.o.requires
 src/leanet/CMakeFiles/leanet.dir/requires: src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o.requires
 

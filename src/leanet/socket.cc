@@ -15,9 +15,10 @@ Socket::~Socket() {
 	sockets::close(sockfd_);
 }
 
+#if 0 // on macOS, can't compile
 bool Socket::getTcpInfo(struct tcp_info* info) const {
-	socklen_t len = static_cast<socklen_t>(*info);
-	::bzero(*info, len);
+	socklen_t len = static_cast<socklen_t>(sizeof(*info));
+	::bzero(info, len);
 	return ::getsockopt(sockfd_, SOL_TCP, TCP_INFO, info, &len) == 0;
 }
 
@@ -44,8 +45,9 @@ bool Socket::getTcpInfoString(char* buf, int len) const {
 	}
 	return ok;
 }
+#endif
 
-void Socket::bindAddress(const InetAddrss& addr) {
+void Socket::bindAddress(const InetAddress& addr) {
 	sockets::bindOrDie(sockfd_, addr.getSockAddr());
 }
 
@@ -55,7 +57,7 @@ void Socket::listen() {
 
 int Socket::accept(InetAddress* peeraddr) {
 	struct sockaddr_in6 addr;
-	::bzero(addr, sizeof(addr));
+	::bzero(&addr, sizeof(addr));
 	int connfd = sockets::accept(sockfd_, &addr);
 	if (connfd >= 0) {
 		peeraddr->setSockAddrInet6(addr);

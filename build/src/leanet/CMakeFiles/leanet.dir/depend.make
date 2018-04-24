@@ -30,6 +30,17 @@ src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o: ../src/leanet/timestamp.h
 src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o: ../src/leanet/types.h
 src/leanet/CMakeFiles/leanet.dir/eventloop.cc.o: ../src/leanet/eventloop.cc
 
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/copyable.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/inetaddress.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/logger.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/logstream.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/noncopyable.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/sockets.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/stringview.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/timestamp.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/types.h
+src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o: ../src/leanet/inetaddress.cc
+
 src/leanet/CMakeFiles/leanet.dir/logger.cc.o: ../src/leanet/copyable.h
 src/leanet/CMakeFiles/leanet.dir/logger.cc.o: ../src/leanet/currentthread.h
 src/leanet/CMakeFiles/leanet.dir/logger.cc.o: ../src/leanet/logger.h
@@ -41,11 +52,24 @@ src/leanet/CMakeFiles/leanet.dir/logger.cc.o: ../src/leanet/timezone.h
 src/leanet/CMakeFiles/leanet.dir/logger.cc.o: ../src/leanet/types.h
 src/leanet/CMakeFiles/leanet.dir/logger.cc.o: ../src/leanet/logger.cc
 
+src/leanet/CMakeFiles/leanet.dir/logstream.cc.o: ../src/leanet/copyable.h
 src/leanet/CMakeFiles/leanet.dir/logstream.cc.o: ../src/leanet/logstream.h
 src/leanet/CMakeFiles/leanet.dir/logstream.cc.o: ../src/leanet/noncopyable.h
 src/leanet/CMakeFiles/leanet.dir/logstream.cc.o: ../src/leanet/stringview.h
 src/leanet/CMakeFiles/leanet.dir/logstream.cc.o: ../src/leanet/types.h
 src/leanet/CMakeFiles/leanet.dir/logstream.cc.o: ../src/leanet/logstream.cc
+
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/InetAddress.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/copyable.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/logger.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/logstream.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/noncopyable.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/socket.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/sockets.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/stringview.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/timestamp.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/types.h
+src/leanet/CMakeFiles/leanet.dir/socket.cc.o: ../src/leanet/socket.cc
 
 src/leanet/CMakeFiles/leanet.dir/sockets.cc.o: ../src/leanet/copyable.h
 src/leanet/CMakeFiles/leanet.dir/sockets.cc.o: ../src/leanet/logger.h

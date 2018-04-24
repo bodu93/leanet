@@ -21,7 +21,7 @@ InetAddress::InetAddress(uint16_t port, bool loopbackOnly, bool ipv6) {
 		addr6_.sin6_port = sockets::hostToNet16(port);
 	} else {
 		::bzero(&addr_, sizeof(addr_));
-		addr_.sin_faimly = AF_INET;
+		addr_.sin_family = AF_INET;
 		in_addr_t ip = loopbackOnly ? kInaddrLoopback : kInaddrAny;
 		addr_.sin_addr.s_addr = sockets::hostToNet32(ip);
 		addr_.sin_port = sockets::hostToNet16(port);
@@ -60,8 +60,64 @@ uint32_t InetAddress::ipNetOrder() const {
 	return addr_.sin_addr.s_addr;
 }
 
-static __thread char resolveBuffer[64 * 2014];
+static __thread char t_resolveBuffer[64 * 2014];
+// bool InetAddress::resolve(
+// 		StringArg hostname,
+// 		StringArg servicename,
+// 		InetAddress* result) {
+// 	assert(result);
+//
+// 	struct addrinfo hint;
+// 	::bzero(&hint, sizeof(hint));
+// 	hint.ai_flags = AI_CANONNAME;
+// 	hint.ai_family = AF_INET;
+//
+// 	struct addrinfo* ailist = NULL;
+// 	int ret = ::getaddrinfo(
+// 			hostname.c_str(),
+// 			servicename.c_str(),
+// 			&hint,
+// 			&ailist);
+// 	if (ret == 0 && ailist != NULL) {
+// 		for (struct addrinfo* aip = ailist;
+// 				 aip != NULL;
+// 				 aip = aip->ai_next) {
+// 			if (aip->ai_family == AF_INET) {
+// 				result->addr_ = *(sockets::sockaddr_in_cast(aip->ai_addr));
+// 				break;
+// 			}
+// 		}
+// 		freeaddrinfo(ailist);
+// 	} else {
+// 		if (ret) {
+// 			LOG_SYSERR << "InetAddress::resolve";
+// 		}
+// 		return false;
+// 	}
+//
+// 	return true;
+// }
+
 bool InetAddress::resolve(StringArg hostname, InetAddress* result) {
 	assert(result);
+
+#if 0 // on macOS, can't compile
+	struct hostent hent;
+	::bzero(&hent, sizeof(hent));
+	struct hostent* he = NULL;
+	int herrno = 0;
+	int ret = gethostbyname_r(hostname.c_str(), &hent,
+			t_resolveBuffer, sizeof(t_resolveBuffer), &he, &herrno);
+	if (ret == 0 && he != NULL) {
+		assert(he->h_addrtype == AF_INET && he->h_length == sizeof(uint32_t));
+		result->addr_.sin_addr = *reinterpret_cast<struct in_addr*>(he->h_addr);
+		return true;
+	} else {
+		if (ret) {
+			LOG_SYSERR << "InetAddress::resolve";
+		}
+		return false;
+	}
+#endif
 	return false;
 }

@@ -244,6 +244,33 @@ eventloop.cc.s:
 	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/eventloop.cc.s
 .PHONY : eventloop.cc.s
 
+inetaddress.o: inetaddress.cc.o
+
+.PHONY : inetaddress.o
+
+# target to build an object file
+inetaddress.cc.o:
+	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.o
+.PHONY : inetaddress.cc.o
+
+inetaddress.i: inetaddress.cc.i
+
+.PHONY : inetaddress.i
+
+# target to preprocess a source file
+inetaddress.cc.i:
+	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.i
+.PHONY : inetaddress.cc.i
+
+inetaddress.s: inetaddress.cc.s
+
+.PHONY : inetaddress.s
+
+# target to generate assembly for a file
+inetaddress.cc.s:
+	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/inetaddress.cc.s
+.PHONY : inetaddress.cc.s
+
 logger.o: logger.cc.o
 
 .PHONY : logger.o
@@ -297,6 +324,33 @@ logstream.s: logstream.cc.s
 logstream.cc.s:
 	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/logstream.cc.s
 .PHONY : logstream.cc.s
+
+socket.o: socket.cc.o
+
+.PHONY : socket.o
+
+# target to build an object file
+socket.cc.o:
+	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/socket.cc.o
+.PHONY : socket.cc.o
+
+socket.i: socket.cc.i
+
+.PHONY : socket.i
+
+# target to preprocess a source file
+socket.cc.i:
+	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/socket.cc.i
+.PHONY : socket.cc.i
+
+socket.s: socket.cc.s
+
+.PHONY : socket.s
+
+# target to generate assembly for a file
+socket.cc.s:
+	cd /Users/bodu/codes/gits/leanet/build && $(MAKE) -f src/leanet/CMakeFiles/leanet.dir/build.make src/leanet/CMakeFiles/leanet.dir/socket.cc.s
+.PHONY : socket.cc.s
 
 sockets.o: sockets.cc.o
 
@@ -428,12 +482,18 @@ help:
 	@echo "... eventloop.o"
 	@echo "... eventloop.i"
 	@echo "... eventloop.s"
+	@echo "... inetaddress.o"
+	@echo "... inetaddress.i"
+	@echo "... inetaddress.s"
 	@echo "... logger.o"
 	@echo "... logger.i"
 	@echo "... logger.s"
 	@echo "... logstream.o"
 	@echo "... logstream.i"
 	@echo "... logstream.s"
+	@echo "... socket.o"
+	@echo "... socket.i"
+	@echo "... socket.s"
 	@echo "... sockets.o"
 	@echo "... sockets.i"
 	@echo "... sockets.s"
