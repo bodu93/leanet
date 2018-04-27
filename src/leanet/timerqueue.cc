@@ -58,7 +58,6 @@ void readTimerfd(int timerfd, Timestamp now) {
 	}
 }
 
-
 }
 
 using namespace leanet;
@@ -115,7 +114,7 @@ void TimerQueue::addTimerInLoop(Timer* timer) {
 	loop_->assertInLoopThread();
 	bool earliestChanged = insert(timer);
 	if (earliestChanged) {
-		resetTimerfd(timerfd_, timer_->expiration());
+		::resetTimerfd(timerfd_, timer_->expiration());
 	}
 }
 
@@ -130,6 +129,9 @@ void TimerQueue::cancelTimerInLoop(TimerId timerid) {
 		delete it->first;
 		activeTimers_.erase(it);
 	} else if (callingExpiredTimers_) {
+		// because we in handleRead(), after all timers' callback are executed,
+		// then handleRead() will call reset(), so we add canceled timers into
+		// cancelingTimers to exclude them in reset()
 		cancelingTimers_.insert(timer);
 	}
 }
@@ -138,7 +140,7 @@ void TimerQueue::cancelTimerInLoop(TimerId timerid) {
 void TimerQueue::handleRead() {
 	loop_->assertInLoopThread();
 	Timestamp now(Timestamp::now());
-	readTimerfd(timerfd_, now);
+	::readTimerfd(timerfd_, now);
 
 	std::vector<Entry>& expired = getExpired(now);
 
@@ -176,10 +178,8 @@ void TimerQueue::reset(const std::vector<Entry>& expired, Timestamp now) {
 	}
 
 	if (nextExpire.valid()) {
-		resetTimerfd(timerfd_, nextExpire);
+		::resetTimerfd(timerfd_, nextExpire);
 	}
-}
-
 }
 
 bool TimerQueue::insert(Timer* timer) {
