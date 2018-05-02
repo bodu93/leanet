@@ -6,12 +6,12 @@
 #include <string>
 #include <functional>
 
-#include <leanet/types.h>
-#include <leanet/noncopyable.h>
-#include <leanet/atomic.h>
-#include <leanet/mutex.h>
-#include <leanet/condition.h>
-#include <leanet/countdownlatch.h>
+#include "types.h"
+#include "noncopyable.h"
+#include "atomic.h"
+#include "mutex.h"
+#include "condition.h"
+#include "countdownlatch.h"
 
 namespace leanet {
 

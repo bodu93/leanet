@@ -1,4 +1,4 @@
-#include <leanet/timezone.h>
+#include "timezone.h"
 
 //#include <endian.h>  // be32toh
 #include <arpa/inet.h> // ntohs
@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
-#include <leanet/types.h>
-#include <leanet/noncopyable.h>
-#include <leanet/date.h>
+#include "types.h"
+#include "noncopyable.h"
+#include "date.h"
 
 namespace leanet {
 

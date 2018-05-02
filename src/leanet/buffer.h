@@ -8,10 +8,10 @@
 #include <algorithm>
 #include <vector>
 
-#include <leanet/types.h>
-#include <leanet/copyable.h>
-#include <leanet/sockets.h>
-#include <leanet/stringview.h>
+#include "types.h"
+#include "copyable.h"
+#include "sockets.h"
+#include "stringview.h"
 
 namespace leanet {
 

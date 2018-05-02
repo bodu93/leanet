@@ -2,9 +2,11 @@
 #define LEANET_ACCEPTOR_H
 
 #include <functional>
-#include <leanet/noncopyable.h>
-#include <leanet/channel.h>
-#include <leanet/socket.h>
+
+#include "noncopyable.h"
+#include "channel.h"
+#include "socket.h"
+#include "callbacks.h"
 
 namespace leanet {
 

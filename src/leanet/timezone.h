@@ -3,7 +3,7 @@
 
 #include <time.h>
 #include <memory> // std::shared_ptr
-#include <leanet/copyable.h>
+#include "copyable.h"
 
 namespace leanet {
 

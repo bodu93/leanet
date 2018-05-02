@@ -1,4 +1,4 @@
-#include <leanet/logstream.h>
+#include "logstream.h"
 
 #include <stdint.h>
 #include <stdio.h>

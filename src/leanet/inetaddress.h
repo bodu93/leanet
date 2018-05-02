@@ -3,8 +3,8 @@
 
 #include <netinet/in.h>
 
-#include <leanet/copyable.h>
-#include <leanet/stringview.h>
+#include "copyable.h"
+#include "stringview.h"
 
 //
 // namespace member forward declarations

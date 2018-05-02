@@ -1,8 +1,8 @@
 #ifndef LEANET_TIMERFD_H
 #define LEANET_TIMERFD_H
 
-#include <leanet/noncopyable.h>
-#include <leanet/timestamp.h>
+#include "noncopyable.h"
+#include "timestamp.h"
 
 namespace leanet {
 

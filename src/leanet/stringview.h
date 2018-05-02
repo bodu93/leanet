@@ -3,8 +3,8 @@
 
 #include <string.h> // strlen
 
-#include <leanet/copyable.h>
-#include <leanet/types.h>
+#include "copyable.h"
+#include "types.h"
 
 namespace leanet {
 

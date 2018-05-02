@@ -1,7 +1,7 @@
 #ifndef LEANET_SOCKET_H
 #define LEANET_SOCKET_H
 
-#include <leanet/noncopyable.h>
+#include "noncopyable.h"
 
 // on macOS, struct tcp_connection_info is in <netinet/tcp.h>
 // struct tcp_connection_info;

@@ -1,4 +1,4 @@
-#include <leanet/sockets.h>
+#include "sockets.h"
 
 #include <unistd.h>
 //#include <endian.h>
@@ -12,8 +12,8 @@
 #include <strings.h> // bzero
 #include <stdio.h> // snprintf
 
-#include <leanet/types.h>
-#include <leanet/logger.h>
+#include "types.h"
+#include "logger.h"
 
 using namespace leanet;
 

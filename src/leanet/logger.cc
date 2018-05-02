@@ -1,4 +1,4 @@
-#include <leanet/logger.h>
+#include "logger.h"
 
 #include <errno.h>
 
@@ -7,9 +7,9 @@
 #include <string.h> // strerror_r
 #include <assert.h>
 
-#include <leanet/currentthread.h>
-#include <leanet/timestamp.h>
-#include <leanet/timezone.h>
+#include "currentthread.h"
+#include "timestamp.h"
+#include "timezone.h"
 
 namespace leanet {
 

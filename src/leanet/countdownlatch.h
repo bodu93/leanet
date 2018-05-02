@@ -2,9 +2,9 @@
 #define LEANET_COUNTDOWNLATCH_H
 
 #include <assert.h>
-#include <leanet/noncopyable.h>
-#include <leanet/mutex.h>
-#include <leanet/condition.h>
+#include "noncopyable.h"
+#include "mutex.h"
+#include "condition.h"
 
 namespace leanet {
 

@@ -3,7 +3,8 @@
 
 #include <functional> // std::function
 #include <memory> // std::shared_ptr
-#include <leanet/timestamp.h>
+
+#include "timestamp.h"
 
 namespace leanet {
 

@@ -2,8 +2,8 @@
 #define LEANET_CONDITION_H
 
 #include <pthread.h>
-#include <leanet/noncopyable.h>
-#include <leanet/mutex.h>
+#include "noncopyable.h"
+#include "mutex.h"
 
 namespace leanet {
 

@@ -4,8 +4,8 @@
 #include <vector>
 #include <map>
 
-#include <leanet/noncopyable.h>
-#include <leanet/timestamp.h>
+#include "noncopyable.h"
+#include "timestamp.h"
 
 struct pollfd;
 
@@ -28,6 +28,7 @@ public:
 	Timestamp poll(int timeoutMs, ChannelList* activeChannels);
 
 	void updateChannel(Channel* channel);
+	void removeChannel(Channel* channel);
 
 	void assertInLoopThread();
 

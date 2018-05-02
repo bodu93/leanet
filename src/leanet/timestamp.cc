@@ -1,4 +1,4 @@
-#include <leanet/timestamp.h>
+#include "timestamp.h"
 #include <time.h>
 #include <sys/time.h>
 #include <utility> // std::swap since C++11

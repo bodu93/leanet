@@ -2,7 +2,7 @@
 #define LEANET_MUTEX_H
 
 #include <pthread.h>
-#include <leanet/noncopyable.h>
+#include "noncopyable.h"
 
 namespace leanet {
 

@@ -1,8 +1,8 @@
-#include <leanet/thread.h>
+#include "thread.h"
 #include <unistd.h>
 #include <pthread.h>
 #include <assert.h>
-#include <leanet/currentthread.h>
+#include "currentthread.h"
 
 namespace leanet {
 

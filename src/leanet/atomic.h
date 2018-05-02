@@ -1,7 +1,8 @@
 #ifndef LEANET_ATOMIC_H
 #define LEANET_ATOMIC_H
 
-#include <leanet/noncopyable.h>
+#include "noncopyable.h"
+
 #include <stdint.h>
 
 namespace leanet {

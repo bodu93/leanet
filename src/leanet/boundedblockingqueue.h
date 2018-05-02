@@ -1,8 +1,8 @@
 #ifndef LEANET_BOUNDEDBLOCKINGQUEUE_H
 #define LEANET_BOUNDEDBLOCKINGQUEUE_H
 
-#include <leanet/mutex.h>
-#include <leanet/condition.h>
+#include "mutex.h"
+#include "condition.h"
 #include <assert.h>
 #include <deque>
 

@@ -1,4 +1,4 @@
-#include <leanet/timerqueue.h>
+#include "timerqueue.h"
 
 #include <assert.h>
 #include <sys/timerfd.h>
@@ -8,11 +8,11 @@
 #include <algorithm>
 #include <iterator>
 
-#include <leanet/logger.h>
-#include <leanet/timer.h>
-#include <leanet/timerid.h>
-#include <leanet/channel.h>
-#include <leanet/eventloop.h>
+#include "logger.h"
+#include "timer.h"
+#include "timerid.h"
+#include "channel.h"
+#include "eventloop.h"
 
 namespace {
 

@@ -1,4 +1,4 @@
-#include <leanet/eventloop.h>
+#include "eventloop.h"
 
 #include <unistd.h>
 #include <signal.h>
@@ -6,12 +6,12 @@
 #include <assert.h>
 #include <stdlib.h>
 
-#include <leanet/logger.h>
-#include <leanet/sockets.h>
-#include <leanet/channel.h>
-#include <leanet/poller.h>
-#include <leanet/timer.h>
-#include <leanet/timerqueue.h>
+#include "logger.h"
+#include "sockets.h"
+#include "channel.h"
+#include "poller.h"
+#include "timer.h"
+#include "timerqueue.h"
 
 using namespace leanet;
 
@@ -50,7 +50,6 @@ EventLoop::EventLoop()
 		timerQueue_(new TimerQueue(this)),
 		wakeupFd_(createEventfd()),
 		wakupChannel_(new Channel(this, wakeupFd_)),
-		activeChannels_(),
 		pendingFunctors_()
 {
 	if (t_loopInThisThread) {
@@ -80,12 +79,17 @@ void EventLoop::loop() {
 	quit_ = false;
 
 	while (!quit_) {
+		//
+		// if there no timerfd* apis, we could handle timer callbacks
+		// at there(or handle it using another separate timer thread)
+		//
 		activeChannels_.clear();
 		pollReturnedTime_ = poller_->poll(kPollTimeMs, &activeChannels_);
 		for (ChannelList::iterator iter = activeChannels_.begin();
 				 iter != activeChannels_.end();
 				 ++iter) {
-			(*iter)->handleEvent();
+			// pollReturnedTime_ is the time of message arival
+			(*iter)->handleEvent(pollReturnedTime_);
 		}
 		doPendingFunctors();
 	}
@@ -145,6 +149,11 @@ void EventLoop::updateChannel(Channel* channel) {
 	poller_->updateChannel(channel);
 }
 
+void EventLoop::removeChannel(Channel* channel) {
+	assertInLoopThread();
+	poller_->removeChannel(channel);
+}
+
 TimerId EventLoop::runAt(const Timestamp& time, const TimerCallback& cb) {
 	return timerQueue_->addTimer(cb, time, 0.0);
 }
@@ -185,4 +194,3 @@ void EventLoop::abortNotInLoopThread() {
 						<< " was created in threadId_ = " << threadId_
 						<< ", current thread id = " << currentThread::tid();
 }
-

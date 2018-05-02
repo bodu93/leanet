@@ -1,11 +1,10 @@
-#include <leanet/poller.h>
+#include "poller.h"
+#include "types.h"
+#include "logger.h"
+#include "channel.h"
+#include "eventloop.h"
 
 #include <poll.h>
-
-#include <leanet/logger.h>
-#include <leanet/channel.h>
-#include <leanet/eventloop.h>
-
 
 using namespace leanet;
 
@@ -63,6 +62,38 @@ void Poller::updateChannel(Channel* channel) {
 		}
 	}
 }
+
+void Poller::removeChannel(Channel* channel) {
+	assertInLoopThread();
+	LOG_TRACE << "fd= " << channel_->fd();
+	assert(channels_.find(channel->fd()) != channels.end());
+	assert(channels_[channel->fd()] == channel);
+	// before removeChannel(): channel->disableAll()
+	assert(channel->isNoneEvent());
+
+	int idx = channel_->index();
+	assert(0 <= idx && idx < static_cast<int>(pollfds_.size()));
+	const struct pollfd& pfd = pollfds_[idx];
+	Unused(pfd);
+	assert(pfd.fd == -channel->fd() - 1 &&
+			pfd.events() == channel->interestedEvents());
+	size_t n = channels_.erase(channel->fd());
+	assert(n == 1);
+	Unused(n);
+	if (implicit_cast<size_t>(idx) == pollfds_.size() - 1) {
+		pollfds_.pop_back();
+	} else {
+		int lastChannelFd = pollfds_.back().fd;
+		std::iter_swap(pollfds_.begin() + idx, pollfds_.end() - 1);
+		if (lastChannelFd < 0) {
+			lastChannelFd = -lastChannelFd - 1;
+		}
+		channels_[lastChannelFd]->setIndex(idx);
+		pollfds_.pop_back();
+	}
+}
+
+
 
 void Poller::assertInLoopThread() {
 	ownerLoop_->assertInLoopThread();

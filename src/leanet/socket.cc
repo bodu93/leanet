@@ -1,13 +1,13 @@
-#include <leanet/socket.h>
+#include "socket.h"
 
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <strings.h>
 #include <stdio.h>
 
-#include <leanet/inetaddress.h>
-#include <leanet/sockets.h>
-#include <leanet/logger.h>
+#include "inetaddress.h"
+#include "sockets.h"
+#include "logger.h"
 
 using namespace leanet;
 

@@ -1,10 +1,10 @@
 #ifndef LEANET_LOGGER_H
 #define LEANET_LOGGER_H
 
-#include <leanet/types.h>
-#include <leanet/noncopyable.h>
-#include <leanet/logstream.h>
-#include <leanet/timestamp.h>
+#include "types.h"
+#include "noncopyable.h"
+#include "logstream.h"
+#include "timestamp.h"
 
 namespace leanet {
 

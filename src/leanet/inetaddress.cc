@@ -1,11 +1,11 @@
-#include <leanet/inetaddress.h>
+#include "inetaddress.h"
 
 #include <netinet/in.h>
 #include <netdb.h>
 #include <strings.h>
 
-#include <leanet/sockets.h>
-#include <leanet/logger.h>
+#include "sockets.h"
+#include "logger.h"
 
 static const in_addr_t kInaddrAny = INADDR_ANY;
 static const in_addr_t kInaddrLoopback = INADDR_LOOPBACK;

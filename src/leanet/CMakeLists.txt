@@ -17,9 +17,15 @@ set(SRCS
 	sockets.cc
 	socket.cc
 	inetaddress.cc
+	timer.cc
+	# timerqueue.cc
 	channel.cc
 	poller.cc
 	eventloop.cc
+	eventloopthread.cc
+	acceptor.cc
+	tcpconnection.cc
+	tcpserver.cc
 	)
 
 add_library(leanet ${SRCS})

@@ -1,7 +1,8 @@
 #ifndef LEANET_CHANNEL_H
 #define LEANET_CHANNEL_H
 
-#include <leanet/noncopyable.h>
+#include "noncopyable.h"
+#include "timestamp.h"
 #include <functional>
 
 namespace leanet {
@@ -17,14 +18,18 @@ class EventLoop;
 class Channel: noncopyable {
 public:
 	typedef std::function<void ()> EventCallback;
+	typedef std::function<void (Timestamp)> ReadEventCallback;
 
 	explicit Channel(EventLoop* loop, int fd);
+	~Channel();
 
-	void handleEvent();
-	void setReadCallback(const EventCallback& cb)
+	void handleEvent(Timestamp receiveTime);
+	void setReadCallback(const ReadEventCallback& cb)
 	{ readCallback_ = cb; }
 	void setWriteCallback(const EventCallback& cb)
 	{ writeCallback_ = cb; }
+	void setCloseCallback(const EventCallback& cb)
+	{ closeCallback_ = cb; }
 	void setErrorCallback(const EventCallback& cb)
 	{ errorCallback_ = cb; }
 
@@ -36,28 +41,35 @@ public:
 	void setReceivedEvents(int revents)
 	{ receivedEvents_ = revents; }
 
-	bool isNoneEvent() const
-	{ return interestedEvents_ == kNoneEvent; }
-
+	// read forever, so no enableReading() there...
 	void enableReading() {
 		interestedEvents_ |= kReadEvent;
 		update();
 	}
 
-	// void enableWriting() {
-	// interestedEvents_ |= kWriteEvent;
-	// update();
-	// }
-	//
-	// void disableWriting() {
-	// interestedEvents_ &= ~kWriteEvent;
-	// update();
-	// }
-	//
-	// void disableAll() {
-	// interestedEvents_ = kNoneEvent;
-	// update();
-	// }
+	void enableWriting() {
+		interestedEvents_ |= kWriteEvent;
+		update();
+	}
+	// level-triggered, so we need disableWriting()
+	void disableWriting() {
+		interestedEvents_ &= ~kWriteEvent;
+		update();
+	}
+
+	void disableAll() {
+		interestedEvents_ = kNoneEvent;
+		update();
+	}
+
+	bool isNoneEvent() const {
+		return interestedEvents_ == kNoneEvent;
+	}
+
+	bool isWriting() const {
+		return events_ & kWriteEvent;
+	}
+
 
 	// for poller
 	int index() { return index_; }
@@ -79,8 +91,10 @@ private:
 
 	int index_; // used by poller
 
-	EventCallback readCallback_;
+	bool eventHanding_;
+	ReadEventCallback readCallback_;
 	EventCallback writeCallback_;
+	EventCallback closeCallback_;
 	EventCallback errorCallback_;
 };
 

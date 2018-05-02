@@ -5,9 +5,10 @@
 #include <vector>
 #include <set>
 
-#include <leanet/callbacks.h>
-#include <leanet/noncopyable.h>
-#include <leanet/timestamp.h>
+#include "callbacks.h"
+#include "noncopyable.h"
+#include "timestamp.h"
+#include "channel.h"
 
 namespace leanet {
 

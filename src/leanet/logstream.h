@@ -4,9 +4,9 @@
 #include <assert.h>
 #include <string.h> // bzero
 
-#include <leanet/types.h>
-#include <leanet/noncopyable.h>
-#include <leanet/stringview.h>
+#include "types.h"
+#include "noncopyable.h"
+#include "stringview.h"
 
 namespace leanet {
 

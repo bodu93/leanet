@@ -1,8 +1,8 @@
 #ifndef LEANET_BLOCKINGQUEUE_H
 #define LEANET_BLOCKINGQUEUE_H
 
-#include <leanet/mutex.h>
-#include <leanet/condition.h>
+#include "mutex.h"
+#include "condition.h"
 #include <assert.h>
 #include <deque>
 
@@ -10,13 +10,6 @@ namespace leanet {
 
 template<typename T>
 class BlockingQueue {
-private:
-	// use mutex_ in constant member functions, so we add the 'mutable' keyword
-	mutable Mutex mutex_;
-	Condition notEmpty_;
-	// @guardby mutex_
-	std::deque<T> queue_;
-
 public:
 	BlockingQueue()
 		: mutex_(),
@@ -48,6 +41,13 @@ public:
 		MutexLock guard(mutex_);
 		return queue_.size();
 	}
+
+private:
+	// use mutex_ in constant member functions, so we add the 'mutable' keyword
+	mutable Mutex mutex_;
+	Condition notEmpty_;
+	// @guardby mutex_
+	std::deque<T> queue_;
 };
 
 } // namespace leanet

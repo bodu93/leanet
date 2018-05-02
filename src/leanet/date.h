@@ -1,8 +1,8 @@
 #ifndef LEANET_DATE_H
 #define LEANET_DATE_H
 
-#include <leanet/types.h>
-#include <leanet/copyable.h>
+#include "types.h"
+#include "copyable.h"
 
 struct tm;
 

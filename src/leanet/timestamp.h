@@ -5,8 +5,8 @@
 #include <string>
 #include <utility> // std::swap since C++11
 
-#include <leanet/types.h>
-#include <leanet/copyable.h>
+#include "types.h"
+#include "copyable.h"
 
 namespace leanet {
 
