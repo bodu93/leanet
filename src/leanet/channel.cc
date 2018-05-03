@@ -55,3 +55,8 @@ void Channel::update() {
 	assert(loop_);
 	loop_->updateChannel(this);
 }
+
+void Channel::remove() {
+	assert(isNoneEvent());
+	loop_->removeChannel(this);
+}

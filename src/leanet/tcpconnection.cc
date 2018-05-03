@@ -1,6 +1,7 @@
 #include "tcpconnection.h"
 
 #include "types.h"
+#include "callbacks.h"
 #include "eventloop.h"
 #include "channel.h"
 #include "socket.h"
@@ -10,6 +11,19 @@
 #include <assert.h>
 
 using namespace leanet;
+
+void defaultConnectionCallback(const TcpConnectionPtr& conn) {
+	LOG_TRACE << conn->localAddress().ipPort() << " -> "
+						<< conn->peerAddress().ipPort() << " is "
+						<< (conn->connected() ? "UP" : "DOWN");
+}
+
+void defaultMessageCallback(const TcpConnectionPtr&,
+														Buffer* buffer,
+														Timestamp) {
+	// discard received message
+	buffer->retrieveAll();
+}
 
 TcpConnection::TcpConnection(
 		EventLoop* loop,
@@ -112,6 +126,11 @@ void TcpConnection::handleClose() {
 }
 
 void TcpConnection::handleError() {
+	//
+	// getsockopt(2) will clear pending error on socket.
+	// if peer endpoint send RST, call handleError first and then call
+	// handleRead in Channel::handleEvent, read(2) will return 0 at that time.
+	//
 	int err = sockets::getSocketError(channel_->fd());
 	LOG_ERROR << "TcpConnection::handleError [" << name_ << "] - SO_ERROR= " << err << " " << strerror_tl(err);
 }

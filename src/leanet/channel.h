@@ -70,6 +70,7 @@ public:
 		return events_ & kWriteEvent;
 	}
 
+	void remove();
 
 	// for poller
 	int index() { return index_; }
