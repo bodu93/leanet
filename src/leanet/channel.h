@@ -67,7 +67,7 @@ public:
 	}
 
 	bool isWriting() const {
-		return events_ & kWriteEvent;
+		return interestedEvents_ & kWriteEvent;
 	}
 
 	void remove();

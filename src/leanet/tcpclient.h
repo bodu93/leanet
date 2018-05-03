@@ -49,14 +49,14 @@ private:
 	void removeConnection(const TcpConnectionPtr& conn);
 
 	EventLoop* loop_;
-	ConnectionPtr connector_;
+	ConnectorPtr connector_;
 	const std::string name_;
 	ConnectionCallback connectionCallback_;
 	MessageCallback messageCallback_;
 	WriteCompleteCallback writeCompleteCallback_;
 	bool retry_;
 	bool connected_;
-	int nextConnId;
+	int nextConnId_;
 	mutable Mutex mutex_;
 	TcpConnectionPtr connection_;
 };

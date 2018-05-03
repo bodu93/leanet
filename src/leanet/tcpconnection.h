@@ -43,8 +43,18 @@ public:
 	void setCloseCallback(const CloseCallback& cb)
 	{ closeCallback_ = cb; }
 
+	std::string name() const
+	{ return name_; }
 	EventLoop* getLoop() const
 	{ return loop_; }
+	InetAddress localAddress() const
+	{ return localAddr_; }
+	InetAddress peerAddress() const
+	{ return peerAddr_; }
+	bool connected() const
+	{ return state_ == kConnected; }
+	bool disconnected() const
+	{ return state_ == kDisconnected; }
 
 	void send(const void* data, size_t len);
 	void send(const std::string& message);
@@ -58,7 +68,7 @@ private:
 	enum State { kConnecting, kConnected, kDisconnecting, kDisconnected };
 	void setState(State s) { state_ = s; }
 
-	void handleRead();
+	void handleRead(Timestamp receiveTime);
 	void handleWrite();
 	void handleClose();
 	void handleError();

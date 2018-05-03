@@ -65,18 +65,18 @@ void Poller::updateChannel(Channel* channel) {
 
 void Poller::removeChannel(Channel* channel) {
 	assertInLoopThread();
-	LOG_TRACE << "fd= " << channel_->fd();
-	assert(channels_.find(channel->fd()) != channels.end());
+	LOG_TRACE << "fd= " << channel->fd();
+	assert(channels_.find(channel->fd()) != channels_.end());
 	assert(channels_[channel->fd()] == channel);
 	// before removeChannel(): channel->disableAll()
 	assert(channel->isNoneEvent());
 
-	int idx = channel_->index();
+	int idx = channel->index();
 	assert(0 <= idx && idx < static_cast<int>(pollfds_.size()));
 	const struct pollfd& pfd = pollfds_[idx];
 	Unused(pfd);
 	assert(pfd.fd == -channel->fd() - 1 &&
-			pfd.events() == channel->interestedEvents());
+			pfd.events == channel->interestedEvents());
 	size_t n = channels_.erase(channel->fd());
 	assert(n == 1);
 	Unused(n);

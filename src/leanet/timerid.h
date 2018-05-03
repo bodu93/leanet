@@ -16,7 +16,7 @@ public:
 			sequence_(0)
 	{ }
 
-	TimerId(TimerId* timer, int64_t seq)
+	TimerId(Timer* timer, int64_t seq)
 		: timer_(timer),
 			sequence_(seq)
 	{ }

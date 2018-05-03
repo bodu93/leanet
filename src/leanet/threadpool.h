@@ -2,6 +2,7 @@
 #define LEANET_THREADPOOL_H
 
 #include <string>
+#include <vector>
 #include <deque>
 #include <functional>
 #include <memory>
@@ -12,6 +13,7 @@
 
 namespace leanet {
 
+class Thread;
 class ThreadPool: noncopyable {
 public:
 	typedef std::function<void ()> Task;
@@ -45,7 +47,7 @@ private:
 
 	std::string name_;
 	Task threadInitCallback_;
-	std::vector<std::shared_ptr<leanet::Thread>> threads_;
+	std::vector<std::shared_ptr<Thread>> threads_;
 	std::deque<Task> queue_;
 	size_t maxQueueSize_;
 	bool running_;

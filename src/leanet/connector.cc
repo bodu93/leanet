@@ -54,9 +54,9 @@ void Connector::stopInLoop() {
 }
 
 void Connector::connect() {
-	int sockfd = sockets::createNonblockingorDie(serverAddr_.family());
+	int sockfd = sockets::createNonblockingOrDie(serverAddr_.family());
 	int ret = sockets::connect(sockfd, serverAddr_.getSockAddr());
-	int savederrno = (ret == 0) ? 0 : errno;
+	int savedErrno = (ret == 0) ? 0 : errno;
 	// state machine programming
 	switch (savedErrno) {
 		case 0:
@@ -123,7 +123,7 @@ int Connector::removeAndResetChannel() {
 	// can't reset channel_ here, because we are inside
 	// Channel::handleEvent
 	loop_->queueInLoop(std::bind(&Connector::resetChannel, this));
-	returns sockfd;
+	return sockfd;
 }
 
 void Connector::resetChannel() {

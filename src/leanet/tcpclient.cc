@@ -15,7 +15,7 @@ void removeConnection(EventLoop* loop, const TcpConnectionPtr& conn) {
 	loop->queueInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
 }
 
-void removeConnector(const leanet::ConnectorPtr& connector) {
+void removeConnector(const leanet::ConnectorPtr&) {
 	// TODO
 }
 
@@ -45,12 +45,12 @@ TcpClient::TcpClient(EventLoop* loop,
 TcpClient::~TcpClient() {
 	LOG_INFO << "TcpClient::~TcpClient[" << name_ << "] - connector " << connector_.get();
 
-	TcpConnectorPtr conn;
+	TcpConnectionPtr conn;
 	bool unique = false;
 	{
 	MutexLock lock(mutex_);
 	unique = connection_.unique();
-	conn_ = connection_;
+	conn = connection_;
 	}
 
 	if (conn) {
@@ -98,14 +98,14 @@ void TcpClient::newConnection(int sockfd) {
 	InetAddress peerAddr(sockets::getPeerAddr(sockfd));
 	char buf[32];
 	snprintf(buf, sizeof(buf), ":%s#%d", peerAddr.ipPort().c_str(), nextConnId_);
-	++nextconnId_;
+	++nextConnId_;
 	std::string connName = name_ + buf;
 
 	InetAddress localAddr(sockets::getLocalAddr(sockfd));
 	TcpConnectionPtr conn = std::make_shared<TcpConnection>(
 			loop_,
-			connName,
 			sockfd,
+			connName,
 			localAddr,
 			peerAddr);
 	conn->setConnectionCallback(connectionCallback_);

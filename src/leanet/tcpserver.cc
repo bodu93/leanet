@@ -17,12 +17,13 @@ TcpServer::TcpServer(
 		const std::string& name)
 	: loop_(loop),
 		name_(name),
-		acceptor_(loop, listenAddr),
+		acceptor_(new Acceptor(loop, listenAddr)),
 		started_(false),
 		nextConnId_(0)
 {
 	acceptor_->setNewConnectionCallback(
 			std::bind(&TcpServer::newConnection,
+								this,
 								std::placeholders::_1,
 								std::placeholders::_2));
 }
@@ -54,7 +55,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr) {
 	// multi-thread tcpserver
 	EventLoop* ioLoop = threadPool_->getNextLoop();
 	TcpConnectionPtr conn = std::make_shared<TcpConnection>(
-			ioLoop_, sockfd, connName, localAddr, peerAddr);
+			ioLoop, sockfd, connName, localAddr, peerAddr);
 	connections_[connName] = conn;
 	conn->setConnectionCallback(connectionCallback_);
 	conn->setMessageCallback(messageCallback_);
@@ -67,9 +68,9 @@ void TcpServer::removeConnection(const TcpConnectionPtr& conn) {
 }
 
 void TcpServer::removeConnectionInLoop(const TcpConnectionPtr& conn) {
-	loop_->assertInLoop();
-	LOG_INFO << "TcpServer::removeConnection [" << name_ << "] - connection " << conn->name;
-	size_t n = connections.erase(conn->name());
+	loop_->assertInLoopThread();
+	LOG_INFO << "TcpServer::removeConnection [" << name_ << "] - connection " << conn->name();
+	size_t n = connections_.erase(conn->name());
 	assert(n == 1);
 	Unused(n);
 

@@ -7,6 +7,7 @@
 #include "noncopyable.h"
 #include "mutex.h"
 #include "condition.h"
+#include "thread.h"
 
 namespace leanet {
 

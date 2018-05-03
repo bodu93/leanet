@@ -42,7 +42,10 @@ private:
 	typedef std::map<std::string, TcpConnectionPtr> ConnectionMap;
 	EventLoop* loop_;
 	const std::string name_;
-	std::unique_ptr<Acceptor> acceptor_;
+	std::shared_ptr<Acceptor> acceptor_;
+	// std::function need bind object copyable, but std::unique_ptr
+	// is not copyable
+	// std::unique_ptr<Acceptor> acceptor_;
 	std::unique_ptr<EventLoopThreadPool> threadPool_;
 	ConnectionCallback connectionCallback_;
 	MessageCallback messageCallback_;

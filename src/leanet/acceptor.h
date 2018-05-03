@@ -15,7 +15,7 @@ class InetAddress;
 
 class Acceptor: noncopyable {
 public:
-	typedef std::function<void(int sockfd, const InetAddress&)> NewConnectionCallback;
+	typedef std::function<void (int, const InetAddress&)> NewConnectionCallback;
 
 	Acceptor(EventLoop* loop, const InetAddress& listenAddr);
 

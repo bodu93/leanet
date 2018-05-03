@@ -8,6 +8,7 @@
 #include "sockets.h"
 #include "logger.h"
 
+#include <errno.h>
 #include <assert.h>
 
 using namespace leanet;
@@ -49,12 +50,12 @@ TcpConnection::TcpConnection(
 }
 
 TcpConnection::~TcpConnection() {
-	assert(state_ == kDisConnected);
+	assert(state_ == kDisconnected);
 }
 
 void TcpConnection::connectEstablished() {
 	loop_->assertInLoopThread();
-	assert(state == kConnecting);
+	assert(state_ == kConnecting);
 	setState(kConnected);
 	// register in event loop
 	channel_->enableReading();
@@ -64,10 +65,10 @@ void TcpConnection::connectEstablished() {
 void TcpConnection::connectDestroyed() {
 	loop_->assertInLoopThread();
 	assert(state_ == kConnected || state_ == kDisconnecting);
-	setState(kDisConnected);
+	setState(kDisconnected);
 	channel_->disableAll();
 	connectionCallback_(shared_from_this());
-	loop_->removeChannel(channel_->get());
+	loop_->removeChannel(channel_.get());
 }
 
 void TcpConnection::handleRead(Timestamp receiveTime) {
@@ -98,7 +99,7 @@ void TcpConnection::handleWrite() {
 				channel_->disableWriting();
 				if (writeCompleteCallback_) {
 					// drain all readable bytes...
-					loop_->queueInLoop(writeCompleteCallback_, shared_from_this());
+					loop_->queueInLoop(std::bind(writeCompleteCallback_, shared_from_this()));
 				}
 				if (state_ == kDisconnecting) {
 					shutdownInLoop();
@@ -118,7 +119,7 @@ void TcpConnection::handleClose() {
 	loop_->assertInLoopThread();
 	LOG_TRACE << "TcpConnection::handleClose() state= " << state_;
 	assert(state_ == kConnected || state_ == kDisconnecting);
-	setState(kDisConnected);
+	setState(kDisconnected);
 	channel_->disableAll();
 	if (closeCallback_) {
 		closeCallback_(shared_from_this());
@@ -163,7 +164,7 @@ void TcpConnection::sendInLoop(const std::string& message) {
 				// TODO
 			} else if (writeCompleteCallback_) { // nwrote == message.size
 				// drain whole message...
-				loop_->queueInLoop(writeCompleteCallback_, shared_from_this());
+				loop_->queueInLoop(std::bind(writeCompleteCallback_, shared_from_this()));
 			}
 		} else {
 			nwrote = 0;
@@ -189,7 +190,7 @@ void TcpConnection::sendInLoop(const std::string& message) {
 }
 
 void TcpConnection::shutdown() {
-	if (state == kConnected) {
+	if (state_ == kConnected) {
 		setState(kDisconnecting);
 		loop_->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
 	}

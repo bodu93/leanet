@@ -11,7 +11,6 @@ EventLoopThread::EventLoopThread(
 		exiting_(false),
 		thread_(std::bind(&EventLoopThread::threadFunc, this), name),
 		mutex_(),
-		mutex_(),
 		cond_(mutex_),
 		callback_(cb)
 { }
@@ -48,7 +47,7 @@ void EventLoopThread::threadFunc() {
 	{
 	MutexLock lock(mutex_);
 	loop_ = &loop;
-	cond_.notify();
+	cond_.wakeAll();
 	}
 
 	loop.loop();

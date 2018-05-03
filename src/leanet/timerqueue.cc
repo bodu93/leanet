@@ -103,7 +103,7 @@ std::vector<TimerQueue::Entry> TimerQueue::getExpired(Timestamp now) {
 TimerId TimerQueue::addTimer(const TimerCallback& cb, Timestamp when, double interval) {
 	Timer* timer = new Timer(cb, when, interval);
 	loop_->runInLoop(std::bind(&TimerQueue::addTimerInLoop, this, timer));
-	return TimerId(timer);
+	return TimerId(timer, timer->sequence());
 }
 
 void TimerQueue::cancelTimer(TimerId timerid) {

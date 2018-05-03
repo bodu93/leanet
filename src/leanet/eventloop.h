@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "noncopyable.h"
+#include "callbacks.h"
 #include "mutex.h"
 #include "currentthread.h"
 #include "timestamp.h"
@@ -24,7 +25,7 @@ public:
 	~EventLoop();
 
 	void loop();
-	//void quit();
+	void quit();
 
 	Timestamp pollReturnedTime() const { return pollReturnedTime_; }
 

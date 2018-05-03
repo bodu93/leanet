@@ -21,6 +21,9 @@ public:
 	explicit Connector(EventLoop* loop, const InetAddress& servAddr);
 	~Connector();
 
+	InetAddress serverAddress() const
+	{ return serverAddr_; }
+
 	void setNewConnectionCallback(const NewConnectionCallback& cb)
 	{ newConnectionCallback_ = cb; }
 
@@ -49,7 +52,7 @@ private:
 	void handleError();
 
 	void retry(int sockfd);
-	void removeAndResetChannel();
+	int removeAndResetChannel();
 	void resetChannel();
 
 	EventLoop* loop_;

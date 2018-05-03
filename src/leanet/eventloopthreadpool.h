@@ -11,6 +11,7 @@
 namespace leanet {
 
 class EventLoop;
+class EventLoopThread;
 
 class EventLoopThreadPool: noncopyable {
 public:

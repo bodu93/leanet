@@ -8,7 +8,7 @@
 namespace sockets {
 // socket apis
 //
-int createNonblockingorDie(sa_family_t family);
+int createNonblockingOrDie(sa_family_t family);
 int connect(int sockfd, const struct sockaddr* addr);
 void bindOrDie(int sockfd, const struct sockaddr* addr);
 void listenOrDie(int sockfd);

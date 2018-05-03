@@ -10,12 +10,12 @@ Acceptor::Acceptor(EventLoop* loop, const InetAddress& listenAddr)
 	: loop_(loop),
 		acceptSocket_(sockets::createNonblockingOrDie(AF_INET)),
 		acceptChannel_(loop, acceptSocket_.fd()),
-		listenning(false)
+		listenning_(false)
 {
 	acceptSocket_.setReuseAddr(true);
 	acceptSocket_.bindAddress(listenAddr);
 
-	acceptChannel_.setReadCallback(&Acceptor::handleRead, this);
+	acceptChannel_.setReadCallback(std::bind(&Acceptor::handleRead, this));
 }
 
 void Acceptor::listen() {

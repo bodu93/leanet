@@ -32,7 +32,7 @@ void EventLoopThreadPool::start(const ThreadInitCallback& cb) {
 		char buf[name_.size() + 32];
 		snprintf(buf, sizeof(buf), "%s%d", name_.c_str(), i);
 		std::shared_ptr<EventLoopThread> loopThread =
-			std::make_shared<EventLoopThread>(cb, buf);
+			std::make_shared<EventLoopThread>(cb, std::string(buf));
 		threads_.push_back(loopThread);
 		loops_.push_back(loopThread->startLoop());
 	}
