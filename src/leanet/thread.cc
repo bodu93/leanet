@@ -1,5 +1,6 @@
 #include "thread.h"
 #include <unistd.h>
+#include <sys/syscall.h>
 #include <pthread.h>
 #include <string.h> // memcpy
 #include <assert.h>

@@ -60,7 +60,7 @@ uint32_t InetAddress::ipNetOrder() const {
 	return addr_.sin_addr.s_addr;
 }
 
-// static __thread char t_resolveBuffer[64 * 2014];
+static __thread char t_resolveBuffer[64 * 2014];
 // bool InetAddress::resolve(
 // 		StringArg hostname,
 // 		StringArg servicename,
