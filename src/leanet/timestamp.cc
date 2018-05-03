@@ -1,6 +1,6 @@
 #include "timestamp.h"
 #include <time.h>
-#include <inttypes.h // PRId64
+#include <inttypes.h> // PRId64
 #include <sys/time.h>
 #include <utility> // std::swap since C++11
 
@@ -10,7 +10,7 @@ string Timestamp::toString() const {
 	int64_t seconds = microSecondsFromEpoch_ / kMicroSecondsPerSecond;
 	int64_t microseconds = microSecondsFromEpoch_ % kMicroSecondsPerSecond;
 	char buf[32] = {0};
-	snprintf(buf, sizeof(buf) - 1, "%"PRId64".%06"PRId64, seconds, microseconds);
+	snprintf(buf, sizeof(buf) - 1, "%" PRId64 ".%06" PRId64, seconds, microseconds);
 	return buf;
 }
 
