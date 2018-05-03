@@ -74,8 +74,11 @@ TimerQueue::TimerQueue(EventLoop* loop)
 
 TimerQueue::~TimerQueue() {
 	timerfdChannel_.disableAll();
-	// timerfdChannel_.remove();
+	timerfdChannel_.remove();
 	::close(timerfd_);
+	for (TimerList::iterator it = timers_.begin(); it != timers_.end(); ++it) {
+		delete it->second;
+	}
 }
 
 std::vector<TimerQueue::Entry> TimerQueue::getExpired(Timestamp now) {

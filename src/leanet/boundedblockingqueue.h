@@ -10,14 +10,6 @@ namespace leanet {
 
 template<typename T>
 class BoundedBlockingQueue {
-private:
-	mutable Mutex mutex_;
-	Condition notEmpty_;
-	Condition notFull_;
-	size_t maxCapacity_;
-	// @guardby mutex_
-	std::deque<T> queue_;
-
 public:
 	static const size_t DEFAULTCAPACITY = 8;
 	explicit BoundedBlockingQueue(size_t max_cap = DEFAULTCAPACITY)
@@ -53,6 +45,13 @@ public:
 		MutexLock guard(mutex_);
 		return queue_.size();
 	}
+private:
+	mutable Mutex mutex_;
+	Condition notEmpty_;
+	Condition notFull_;
+	size_t maxCapacity_;
+	// @guardby mutex_
+	std::deque<T> queue_;
 };
 
 } // namespace leanet

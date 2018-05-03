@@ -12,29 +12,29 @@ static const in_addr_t kInaddrLoopback = INADDR_LOOPBACK;
 
 using namespace leanet;
 
-InetAddress::InetAddress(uint16_t portArg, bool loopbackOnly, bool ipv6) {
+InetAddress::InetAddress(uint16_t port, bool loopbackOnly, bool ipv6) {
 	if (ipv6) {
 		::bzero(&addr6_, sizeof(addr6_));
 		addr6_.sin6_family = AF_INET6;
 		in6_addr ipaddr = loopbackOnly ? in6addr_loopback : in6addr_any;
 		addr6_.sin6_addr = ipaddr;
-		addr6_.sin6_port = sockets::hostToNet16(portArg);
+		addr6_.sin6_port = sockets::hostToNet16(port);
 	} else {
 		::bzero(&addr_, sizeof(addr_));
 		addr_.sin_family = AF_INET;
 		in_addr_t ipaddr = loopbackOnly ? kInaddrLoopback : kInaddrAny;
 		addr_.sin_addr.s_addr = sockets::hostToNet32(ipaddr);
-		addr_.sin_port = sockets::hostToNet16(portArg);
+		addr_.sin_port = sockets::hostToNet16(port);
 	}
 }
 
-InetAddress::InetAddress(StringArg ipArg, uint16_t portArg, bool ipv6) {
+InetAddress::InetAddress(StringArg ip, uint16_t port, bool ipv6) {
 	if (ipv6) {
 		::bzero(&addr6_, sizeof(addr6_));
-		sockets::fromIpPort(ipArg.c_str(), portArg, &addr6_);
+		sockets::fromIpPort(ip.c_str(), port, &addr6_);
 	} else {
 		::bzero(&addr_, sizeof(addr_));
-		sockets::fromIpPort(ipArg.c_str(), portArg, &addr_);
+		sockets::fromIpPort(ip.c_str(), port, &addr_);
 	}
 }
 
@@ -103,7 +103,6 @@ bool InetAddress::resolve(StringArg hostname, InetAddress* result) {
 	Unused(hostname);
 	Unused(result);
 
-#if 0 // on macOS, can't compile
 	struct hostent hent;
 	::bzero(&hent, sizeof(hent));
 	struct hostent* he = NULL;
@@ -120,6 +119,5 @@ bool InetAddress::resolve(StringArg hostname, InetAddress* result) {
 		}
 		return false;
 	}
-#endif
 	return false;
 }

@@ -26,12 +26,11 @@ public:
 
 	int fd() const { return sockfd_; }
 
-	//bool getTcpInfo(struct tcp_connection_info*) const;
+	// macOS
+	// bool getTcpInfo(struct tcp_connection_info*) const;
 
-#if 0 // on macOS, can't compile
 	bool getTcpInfo(struct tcp_info* info) const;
 	bool getTcpInfoString(char* buf, int len) const;
-#endif
 
 	void bindAddress(const InetAddress& localaddr);
 	void listen();

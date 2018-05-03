@@ -15,7 +15,6 @@ Socket::~Socket() {
 	sockets::close(sockfd_);
 }
 
-#if 0 // on macOS, can't compile
 bool Socket::getTcpInfo(struct tcp_info* info) const {
 	socklen_t len = static_cast<socklen_t>(sizeof(*info));
 	::bzero(info, len);
@@ -45,7 +44,6 @@ bool Socket::getTcpInfoString(char* buf, int len) const {
 	}
 	return ok;
 }
-#endif
 
 void Socket::bindAddress(const InetAddress& addr) {
 	sockets::bindOrDie(sockfd_, addr.getSockAddr());
