@@ -149,7 +149,7 @@ public:
 		return *this;
 	}
 
-	void append(const char* data, int len) {
+	void append(const char* data, size_t len) {
 		buffer_.append(data, len);
 	}
 

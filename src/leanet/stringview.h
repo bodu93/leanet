@@ -47,8 +47,8 @@ public:
 			length_(str.size())
 	{ }
 
-	StringView(const char* data, size_t len)
-		: data_(data),
+	StringView(const char* dataArg, size_t len)
+		: data_(dataArg),
 			length_(len)
 	{ }
 

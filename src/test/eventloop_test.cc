@@ -10,13 +10,13 @@
 using namespace leanet;
 
 void threadFunc() {
-	printf("threadFunc(): pid = %d, tid = %llu\n", getpid(), leanet::currentThread::tid());
+	printf("threadFunc(): pid = %d, tid = %lu\n", getpid(), leanet::currentThread::tid());
 	leanet::EventLoop loop;
 	loop.loop();
 }
 
 int main() {
-	printf("main(): pid = %d, tid = %llu\n", getpid(), leanet::currentThread::tid());
+	printf("main(): pid = %d, tid = %lu\n", getpid(), leanet::currentThread::tid());
 
 	leanet::EventLoop loop;
 

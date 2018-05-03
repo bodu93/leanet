@@ -52,9 +52,9 @@ int createNonblockingOrDie(sa_family_t family) {
 	}
 	setNonBlockAndCloseOnExec(sockfd);
 #else
-	//int sockfd = ::socket(family, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
-	int sockfd = ::socket(family, SOCK_STREAM, IPPROTO_TCP);
-	setNonBlockAndCloseOnExec(sockfd);
+	int sockfd = ::socket(family, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+	// int sockfd = ::socket(family, SOCK_STREAM, IPPROTO_TCP);
+	// setNonBlockAndCloseOnExec(sockfd);
 	if (sockfd < 0) {
 		LOG_SYSFATAL << "sockets::createNonblockingOrDie";
 	}
@@ -287,14 +287,21 @@ void close(int sockfd) {
 	}
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+
 uint64_t netToHost64(uint64_t n) {
-	//FIXME: on Linux
-	return ntohll(n);
+	// on macOS
+	// return ntohll(n);
+	//
+	// on Linux
+	return be64toh(n);
 }
 
 uint64_t hostToNet64(uint64_t n) {
-	//FIXME: on Linux, use be64toh
-	return htonll(n);
+	//FIXME: on Linux, use htobe64
+	return htobe64(n);
 }
 
 uint32_t netToHost32(uint32_t n) {
@@ -312,5 +319,6 @@ uint16_t netToHost16(uint16_t n) {
 uint16_t hostToNet16(uint16_t n) {
 	return htons(n);
 }
+#pragma GCC diagnostic pop
 
 }

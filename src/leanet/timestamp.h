@@ -13,8 +13,8 @@ namespace leanet {
 class Timestamp: public copyable {
 public:
 	Timestamp(): microSecondsFromEpoch_(0) { }
-	explicit Timestamp(int64_t microSecondsFromEpoch)
-		: microSecondsFromEpoch_(microSecondsFromEpoch)
+	explicit Timestamp(int64_t microSeconds)
+		: microSecondsFromEpoch_(microSeconds)
 	{ }
 	// implicit copy-control members are fine
 	void swap(Timestamp& other) {

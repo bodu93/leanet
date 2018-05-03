@@ -280,10 +280,10 @@ time_t TimeZone::fromLocalTime(const struct tm& localTm) const {
 struct tm TimeZone::toUtcTime(time_t secondsSinceEpoch, bool yday) {
 	struct tm utc;
 	bzero(&utc, sizeof(utc));
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wwritable-strings"
+// #pragma GCC diagnostic push
+// #pragma GCC diagnostic ignored "-Wwritable-strings"
 	utc.tm_zone = "GMT";
-#pragma GCC diagnostic pop
+// #pragma GCC diagnostic pop
 	int seconds = static_cast<int>(secondsSinceEpoch % kSecondsPerDay);
 	int days = static_cast<int>(secondsSinceEpoch / kSecondsPerDay);
 	if (seconds < 0) {

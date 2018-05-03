@@ -9,7 +9,7 @@ string Timestamp::toString() const {
 	int64_t seconds = microSecondsFromEpoch_ / kMicroSecondsPerSecond;
 	int64_t microseconds = microSecondsFromEpoch_ % kMicroSecondsPerSecond;
 	char buf[32] = {0};
-	snprintf(buf, sizeof(buf) - 1, "%lld.%06lld", seconds, microseconds);
+	snprintf(buf, sizeof(buf) - 1, "%ld.%06ld", seconds, microseconds);
 	return buf;
 }
 

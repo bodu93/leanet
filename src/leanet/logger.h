@@ -61,7 +61,7 @@ public:
 	static LogLevel logLevel();
 	static void setLogLevel(LogLevel level);
 
-	typedef void (*LogOutputCallback)(const char* msg, int len);
+	typedef void (*LogOutputCallback)(const char* msg, size_t len);
 	typedef void (*LogFlushCallback)();
 	static void setOutputCallback(LogOutputCallback);
 	static void setFlushCallback(LogFlushCallback);

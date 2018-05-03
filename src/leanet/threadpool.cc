@@ -5,11 +5,11 @@
 
 using namespace leanet;
 
-ThreadPool::ThreadPool(const std::string& name)
+ThreadPool::ThreadPool(const std::string& nameArg)
 	: mutex_(),
 		notEmpty_(mutex_),
 		notFull_(mutex_),
-		name_(name),
+		name_(nameArg),
 		maxQueueSize_(0),
 		running_(false)
 { }

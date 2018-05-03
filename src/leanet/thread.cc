@@ -1,6 +1,7 @@
 #include "thread.h"
 #include <unistd.h>
 #include <pthread.h>
+#include <string.h> // memcpy
 #include <assert.h>
 #include "currentthread.h"
 
@@ -54,10 +55,10 @@ struct ThreadData {
 	string name;
 	CountdownLatch* platch;
 
-	explicit ThreadData(const ThreadFunc& func, const string& name, CountdownLatch* latch)
-		: func(func),
-			name(name),
-			platch(latch)
+	explicit ThreadData(const ThreadFunc& funcArg, const string& nameArg, CountdownLatch* latchArg)
+		: func(funcArg),
+			name(nameArg),
+			platch(latchArg)
 	{ }
 
 	void startThread() {
@@ -77,7 +78,7 @@ void* thread_routine(void* thd_arg) {
 	assert(data);
 	data->startThread();
 	delete data;
-	return (void*)0;
+	return NULL;
 }
 
 } // namespace leanet::detail
@@ -88,7 +89,7 @@ void cacheTid() {
 	if (t_cachedTid == 0) {
 		t_cachedTid = detail::gettid();
 		// cache tid string and tid length for logging
-		t_tidStringLength = snprintf(t_tidString, sizeof(t_tidString), "%5llu ", t_cachedTid);
+		t_tidStringLength = snprintf(t_tidString, sizeof(t_tidString), "%5ld ", t_cachedTid);
 	}
 }
 
@@ -105,9 +106,9 @@ bool isMainThread() {
 } // namespace leanet::currentThread
 
 AtomicInt32 Thread::threadsCreated_;
-Thread::Thread(const ThreadFunc& func, const string& name)
-	: threadFunc_(func),
-		threadName_(name),
+Thread::Thread(const ThreadFunc& funcArg, const string& nameArg)
+	: threadFunc_(funcArg),
+		threadName_(nameArg),
 		started_(false),
 		joined_(false),
 		latch_(1)

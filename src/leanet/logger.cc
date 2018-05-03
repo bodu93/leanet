@@ -15,9 +15,8 @@ namespace leanet {
 
 __thread char t_errnobuf[512];
 const char* strerror_tl(int save_errno) {
-	// FIXME : macOS returned a int, but linux returned char*
-	int err = strerror_r(save_errno, t_errnobuf, sizeof(t_errnobuf));
-	Unused(err);
+	char* ret = strerror_r(save_errno, t_errnobuf, sizeof(t_errnobuf));
+	Unused(ret);
 	return t_errnobuf;
 }
 
@@ -43,9 +42,9 @@ const char* LogLevelNames[Logger::NUM_LOG_LEVELS] = {
 
 class StringHelper {
 public:
-	StringHelper(const char* str, size_t len)
-		: str(str),
-			len(len) {
+	StringHelper(const char* strArg, size_t lenArg)
+		: str(strArg),
+			len(lenArg) {
 	assert(strlen(str) == len);
 	}
 
@@ -94,8 +93,8 @@ __thread char t_time[32];
 __thread time_t t_lastSecond;
 void Logger::Impl::formatTime() {
 	int64_t microSecondsFromEpoch = time_.microSecondsFromEpoch();
-	int seconds = microSecondsFromEpoch / Timestamp::kMicroSecondsPerSecond;
-	int microseconds = microSecondsFromEpoch % Timestamp::kMicroSecondsPerSecond;
+	int seconds = static_cast<int>(microSecondsFromEpoch / Timestamp::kMicroSecondsPerSecond);
+	int microseconds = static_cast<int>(microSecondsFromEpoch % Timestamp::kMicroSecondsPerSecond);
 	// if output log message in one second, we use t_time
 	if (seconds != t_lastSecond) {
 		t_lastSecond = seconds;
@@ -135,7 +134,7 @@ void Logger::Impl::finish() {
 	stream_ << " - " << basename_ << ':' << line_ << '\n';
 }
 
-void defaultOutputCallback(const char* msg, int len) {
+void defaultOutputCallback(const char* msg, size_t len) {
 	::fwrite(msg, len, 1, stdout);
 }
 
