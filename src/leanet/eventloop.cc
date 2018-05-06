@@ -49,7 +49,7 @@ EventLoop::EventLoop()
 		activeChannels_(),
 		timerQueue_(new TimerQueue(this)),
 		wakeupFd_(createEventfd()),
-		wakupChannel_(new Channel(this, wakeupFd_)),
+		wakeupChannel_(new Channel(this, wakeupFd_)),
 		pendingFunctors_()
 {
 	if (t_loopInThisThread) {
@@ -88,7 +88,7 @@ void EventLoop::loop() {
 		for (ChannelList::iterator iter = activeChannels_.begin();
 				 iter != activeChannels_.end();
 				 ++iter) {
-			// pollReturnedTime_ is the time of message arival
+			// pollReturnedTime_ is the time of message arrival
 			(*iter)->handleEvent(pollReturnedTime_);
 		}
 		doPendingFunctors();
@@ -181,7 +181,7 @@ void EventLoop::handleRead() {
 	uint64_t data = 0;
 	ssize_t n = sockets::read(wakeupFd_, &data, sizeof(data));
 	if (n != sizeof(data)) {
-		LOG_ERROR << "EventLoop::handleRead() reads " << n "(instead of 8) bytes";
+		LOG_ERROR << "EventLoop::handleRead() reads " << n << "(instead of 8) bytes";
 	}
 }
 

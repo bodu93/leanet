@@ -68,7 +68,7 @@ void Poller::removeChannel(Channel* channel) {
 	LOG_TRACE << "fd= " << channel->fd();
 	assert(channels_.find(channel->fd()) != channels_.end());
 	assert(channels_[channel->fd()] == channel);
-	// before removeChannel(): channel->disableAll()
+	// we should call disableAll() first before we call removeChannel()
 	assert(channel->isNoneEvent());
 
 	int idx = channel->index();
@@ -111,6 +111,7 @@ void Poller::fillActiveChannels(int numEvents, ChannelList* activeChannels) cons
 		// see Linux's poll(2) man page:
 		// On success, a positive number is returned; this is the
 		// number of structures which have nonzero revents fields.
+		//
 		if (pfd.revents > 0) {
 			--numEvents;
 			ChannelMap::const_iterator iter = channels_.find(pfd.fd);

@@ -6,32 +6,34 @@ if (NOT HAVE_ACCEPT4)
 endif()
 
 set(SRCS
-	timestamp.cc
-	timezone.cc
-	date.cc
-	thread.cc
-	threadpool.cc
-	logstream.cc
-	logger.cc
-
+	acceptor.cc
 	buffer.cc
-	sockets.cc
-	socket.cc
-	inetaddress.cc
-	timer.cc
-	# timerqueue.cc
 	channel.cc
-	poller.cc
-	# eventloop.cc
+	# circularbuffer.cc
+	connector.cc
+	date.cc
+	epollpoller.cc
+	eventloop.cc
 	eventloopthread.cc
 	eventloopthreadpool.cc
-	acceptor.cc
+	inetaddress.cc
+	logger.cc
+	logstream.cc
+	poller.cc
+	# posix.cc
+	socket.cc
+	sockets.cc
+	tcpclient.cc
 	tcpconnection.cc
 	tcpserver.cc
-	connector.cc
-	tcpclient.cc
+	thread.cc
+	threadpool.cc
+	timer.cc
+	# timerfd.cc
+	timerqueue.cc
+	timestamp.cc
+	timezone.cc
 	)
 
 add_library(leanet ${SRCS})
-#target_link_libraries(leanet pthread rt)
-target_link_libraries(leanet pthread)
+target_link_libraries(leanet pthread rt)

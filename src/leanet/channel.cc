@@ -8,8 +8,9 @@
 
 using namespace leanet;
 
+// POLLHUP and POLLERR are registered automatically.
 const int Channel::kNoneEvent = 0;
-const int Channel::kReadEvent = POLLIN | POLLERR;
+const int Channel::kReadEvent = POLLIN | POLLPRI;
 const int Channel::kWriteEvent = POLLOUT;
 
 Channel::Channel(EventLoop* loop, int fd)
