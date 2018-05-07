@@ -31,7 +31,12 @@ int createEventfd() {
 class IgnoreSigpipe {
 public:
 	IgnoreSigpipe() {
-		::signal(SIGPIPE, SIG_IGN);
+		// ::signal(SIGPIPE, SIG_IGN);
+		struct sigaction sa;
+		sa.sa_handler = SIG_IGN;
+		sa.sa_flags = 0;
+		::sigemptyset(&sa.sa_mask);
+		::sigaction(SIGPIPE, &sa, 0);
 	}
 };
 
@@ -45,6 +50,7 @@ EventLoop::EventLoop()
 		quit_(false),
 		callingPendingFunctors_(false),
 		threadId_(currentThread::tid()),
+		pollReturnedTime_(),
 		poller_(new Poller(this)),
 		activeChannels_(),
 		timerQueue_(new TimerQueue(this)),
@@ -68,6 +74,7 @@ EventLoop::~EventLoop() {
 	t_loopInThisThread = 0;
 
 	wakeupChannel_->disableAll();
+	// no need to call wakeupChannel_->remove()
 	::close(wakeupFd_);
 }
 

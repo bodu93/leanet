@@ -13,12 +13,14 @@
 
 using namespace leanet;
 
+// prototype from "types.h"
 void defaultConnectionCallback(const TcpConnectionPtr& conn) {
 	LOG_TRACE << conn->localAddress().ipPort() << " -> "
 						<< conn->peerAddress().ipPort() << " is "
 						<< (conn->connected() ? "UP" : "DOWN");
 }
 
+// prototype from "types.h"
 void defaultMessageCallback(const TcpConnectionPtr&,
 														Buffer* buffer,
 														Timestamp) {
@@ -138,52 +140,60 @@ void TcpConnection::handleError() {
 
 void TcpConnection::send(const void* message, size_t len) {
 	send(std::string(static_cast<const char*>(message), len));
+	if (state_ == kConnected) {
+		if (loop_->isInLoopThread()) {
+			sendInLoop(message, len);
+		} else {
+			loop_->runInLoop(
+					std::bind(&TcpConnection::sendInLoop, this, message, len));
+		}
+	}
 }
 
 void TcpConnection::send(const std::string& message) {
-	if (state_ == kConnected) {
-		if (loop_->isInLoopThread()) {
-			sendInLoop(message);
-		} else {
-			loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, message));
-		}
-	}
+	send(message.data(), message.size());
 }
 
-void TcpConnection::sendInLoop(const std::string& message) {
+void TcpConnection::sendInLoop(const void* data, size_t len) {
 	loop_->assertInLoopThread();
+
 	ssize_t nwrote = 0;
-	// if channel_->isWriting() == true,
-	// indicates that output-buffer has data,
-	// so we just append data into output-buffer
+	size_t remaining = len;
+	bool faultError = false;
+
+	// iff no thing in output queue, try writing directly
 	if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
-		nwrote = ::write(channel_->fd(), message.data(), message.size());
+		nwrote = ::write(channel_->fd(), data, len);
 		if (nwrote >= 0) {
-			// write(2) partial message to socket fd
-			if (implicit_cast<size_t>(nwrote) < message.size()) {
-				// TODO
-			} else if (writeCompleteCallback_) { // nwrote == message.size
-				// drain whole message...
-				loop_->queueInLoop(std::bind(writeCompleteCallback_, shared_from_this()));
+			remaining = len - nwrote;
+			if (remaining == 0 && writeCompleteCallback_) {
+				loop_->queueInLoop(std::bind(
+							writeCompleteCallback_, shared_from_this()));
 			}
 		} else {
 			nwrote = 0;
-			if (errno != EWOULDBLOCK) {
+			if (errno == EWOULDBLOCK) {
 				LOG_SYSERR << "TcpConnection::sendInLoop";
+				if (errno == EPIPE || errno == ECONNRESET) {
+					faultError = true;
+				}
 			}
 		}
 	}
 
-	assert(nwrote >= 0);
-	if (implicit_cast<size_t>(nwrote) < message.size()) {
-		outputBuffer_.append(message.data() + nwrote, message.size() - nwrote);
-		// if (highWaterMarkCallback_) {
-		// 	loop_->queueInLoop(std::bind(
-		// 				highWaterMarkCallback_,
-		// 				shared_from_this(),
-		// 				std::placeholders::_1));
-		// }
+	// else we append data to output queue
+	assert(remaining <= len);
+	if (!faultError && remaining > 0) {
+		size_t oldLen = outputBuffer_.readableBytes();
+		if (oldLen + remaining >= highWaterMark_
+				&& oldLen < highWaterMark_
+				&& highWaterMark_) {
+			loop_->queueInLoop(std::bind(
+						highWaterMarkCallback_, shared_from_this(), oldLen + remaining));
+		}
+		outputBuffer_.append(static_cast<const char*>(data) + nwrote, remaining);
 		if (!channel_->isWriting()) {
+			// iff write(2) partially, we interested on writable event
 			channel_->enableWriting();
 		}
 	}

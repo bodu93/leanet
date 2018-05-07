@@ -84,12 +84,12 @@ private:
 	// timer callbacks
 	std::unique_ptr<TimerQueue> timerQueue_;
 
-	// returned from poller::poll() as fast as possible(not immediatly)
+	// returned from poller::poll() as fast as possible(not immediately)
 	int wakeupFd_;
 	std::unique_ptr<Channel> wakeupChannel_;
 
 	mutable Mutex mutex_;
-	// @guardedBy mutex_
+	// @GuardedBy mutex_
 	std::vector<Functor> pendingFunctors_;
 };
 
