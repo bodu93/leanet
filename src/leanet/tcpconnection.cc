@@ -139,7 +139,6 @@ void TcpConnection::handleError() {
 }
 
 void TcpConnection::send(const void* message, size_t len) {
-	send(std::string(static_cast<const char*>(message), len));
 	if (state_ == kConnected) {
 		if (loop_->isInLoopThread()) {
 			sendInLoop(message, len);
@@ -193,7 +192,7 @@ void TcpConnection::sendInLoop(const void* data, size_t len) {
 		}
 		outputBuffer_.append(static_cast<const char*>(data) + nwrote, remaining);
 		if (!channel_->isWriting()) {
-			// iff write(2) partially, we interested on writable event
+			// iff we have written partial data, we interested on writable event
 			channel_->enableWriting();
 		}
 	}

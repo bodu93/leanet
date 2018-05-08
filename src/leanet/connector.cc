@@ -28,6 +28,15 @@ void Connector::start() {
 	loop_->runInLoop(std::bind(&Connector::startInLoop, this));
 }
 
+// must be called in loop thread
+void Connector::restart() {
+	loop_->assertInLoopThread();
+	setState(kDisconnected);
+	retryDelayMs_ = kInitRetryDelayMs;
+	connected_ = true;
+	startInLoop();
+}
+
 void Connector::startInLoop() {
 	loop_->assertInLoopThread();
 	assert(state_ == kDisconnected);
@@ -40,7 +49,6 @@ void Connector::startInLoop() {
 
 void Connector::stop() {
 	connected_ = false;
-	// why queueInLoop??
 	loop_->queueInLoop(std::bind(&Connector::stopInLoop, this));
 }
 
@@ -94,14 +102,6 @@ void Connector::connect() {
 	}
 }
 
-void Connector::restart() {
-	loop_->assertInLoopThread();
-	setState(kDisconnected);
-	retryDelayMs_ = kInitRetryDelayMs;
-	connected_ = true;
-	startInLoop();
-}
-
 // EINPROGRESS
 void Connector::connecting(int sockfd) {
 	setState(kConnecting);
@@ -144,7 +144,7 @@ void Connector::handleWrite() {
 			LOG_WARN << "Connector::handleWrite - Self connect";
 			retry(sockfd);
 		} else {
-			setState(kDisconnected);
+			setState(kConnected);
 			if (connected_) {
 				newConnectionCallback_(sockfd);
 			} else {
@@ -152,6 +152,9 @@ void Connector::handleWrite() {
 			}
 		}
 	} else {
+		//
+		// scenario: client codes call stop() when we waiting for connect done.
+		//
 		assert(state_ == kDisconnected);
 	}
 }
