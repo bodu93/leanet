@@ -25,7 +25,7 @@ public:
 		notEmpty_.wakeAll();
 	}
 
-	T get() const {
+	T get() {
 		MutexLock guard(mutex_);
 		// blocked when queue is empty
 		while (queue_.empty()) {
