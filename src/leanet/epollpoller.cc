@@ -1,4 +1,6 @@
 #include "epollpoller.h"
+#include "types.h"
+#include "timestamp.h"
 #include "logger.h"
 #include "channel.h"
 #include "eventloop.h"
@@ -17,7 +19,7 @@ const int kAdded = 1;
 const int kDeleted = 2;
 }
 
-EPollPoller::EpollPoller(EventLoop* loop)
+EPollPoller::EPollPoller(EventLoop* loop)
 	: epollfd_(::epoll_create1(EPOLL_CLOEXEC)),
 		events_(kInitEventListSize)
 {
@@ -99,7 +101,8 @@ void EPollPoller::removeChannel(Channel* channel) {
 	Unused(n);
 	assert(n == 1);
 
-	if (index == kAdded) {
+	int idx = channel->index();
+	if (idx == kAdded) {
 		update(EPOLL_CTL_DEL, channel);
 	}
 	channel->setIndex(kNew);

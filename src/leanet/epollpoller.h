@@ -2,16 +2,21 @@
 #define LEANET_EPOLLER_H
 
 #include <vector>
+#include <map>
 #include "noncopyable.h"
 
 struct epoll_event;
 
 namespace leanet {
 
-class EPollPoller;
+class EventLoop;
+class Channel;
+class Timestamp;
 
 class EPollPoller: noncopyable {
 public:
+	typedef std::vector<Channel*> ChannelList;
+
 	EPollPoller(EventLoop* loop);
 	~EPollPoller();
 
@@ -27,9 +32,11 @@ private:
 	void update(int operation, Channel* channel);
 
 	typedef std::vector<struct epoll_event> EventList;
+	typedef std::map<int, Channel*> ChannelMap;
 
 	EventLoop* loop_;
 	int epollfd_;
+	ChannelMap channels_;
 	EventList events_;
 };
 

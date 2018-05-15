@@ -50,7 +50,7 @@ private:
 	TimerList timers_;
 
 	// for cancel()
-	ActiveTimerSet activeTimer_;
+	ActiveTimerSet activeTimers_;
 	bool callingExpiredTimers_; // atomic
 	ActiveTimerSet cancelingTimers_;
 };

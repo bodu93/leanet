@@ -16,6 +16,7 @@ namespace leanet {
 
 class Channel;
 class Poller;
+class EPollPoller;
 
 class EventLoop: noncopyable {
 public:
@@ -29,7 +30,7 @@ public:
 
 	Timestamp pollReturnedTime() const { return pollReturnedTime_; }
 
-
+	// call runInLoop()
 	TimerId runAt(const Timestamp& time, const TimerCallback& cb);
 	TimerId runAfter(double delay, const TimerCallback& cb);
 	TimerId runEvery(double interval, const TimerCallback& cb);
@@ -54,6 +55,7 @@ public:
 	// in EventLoop class:
 	// poller_->updateChannel
 	//
+	// called in loop thread
 	void updateChannel(Channel* channel);
 	void removeChannel(Channel* channel);
 	//bool hasChannel(Channel* channel);
@@ -82,12 +84,12 @@ private:
 	// timer callbacks
 	std::unique_ptr<TimerQueue> timerQueue_;
 
-	// returned from poller::poll() as fast as possible(not immediatly)
+	// returned from poller::poll() as fast as possible(not immediately)
 	int wakeupFd_;
 	std::unique_ptr<Channel> wakeupChannel_;
 
 	mutable Mutex mutex_;
-	// @guardedBy mutex_
+	// @GuardedBy mutex_
 	std::vector<Functor> pendingFunctors_;
 };
 

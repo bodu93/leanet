@@ -29,10 +29,10 @@ public:
 
 	// can be called in any thread
 	void start();
-	// can be called in any thread
-	void stop();
 	// must be called in loop thread
 	void restart();
+	// can be called in any thread
+	void stop();
 
 private:
 	enum State { kDisconnected, kConnecting, kConnected };

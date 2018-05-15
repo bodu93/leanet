@@ -1,5 +1,6 @@
 #include "timerqueue.h"
 
+#include <unistd.h>
 #include <assert.h>
 #include <sys/timerfd.h>
 #include <strings.h>
@@ -13,6 +14,8 @@
 #include "timerid.h"
 #include "channel.h"
 #include "eventloop.h"
+
+using namespace leanet;
 
 namespace {
 
@@ -35,7 +38,7 @@ struct timespec howMuchTimeFromNow(Timestamp when) {
 	return ts;
 }
 
-void resetTimerfd(int timerfd, double expiration) {
+void resetTimerfd(int timerfd, Timestamp expiration) {
 	struct itimerspec newValue;
 	struct itimerspec oldValue;
 	::bzero(&newValue, sizeof(newValue));
@@ -51,7 +54,7 @@ void resetTimerfd(int timerfd, double expiration) {
 // called in TimerQueue::handleRead()
 void readTimerfd(int timerfd, Timestamp now) {
 	uint64_t times;
-	ssize_t n ::read(timerfd, &times, sizeof(times));
+	ssize_t n = ::read(timerfd, &times, sizeof(times));
 	LOG_TRACE << "TimerQueue::handleRead() " << times << " at " << now.toString();
 	if (n != sizeof(times)) {
 		LOG_ERROR << "TimerQueue::handleRead() reads " << n << "(instead of 8) bytes";
@@ -59,8 +62,6 @@ void readTimerfd(int timerfd, Timestamp now) {
 }
 
 }
-
-using namespace leanet;
 
 TimerQueue::TimerQueue(EventLoop* loop)
 	: loop_(loop),
@@ -84,12 +85,12 @@ TimerQueue::~TimerQueue() {
 std::vector<TimerQueue::Entry> TimerQueue::getExpired(Timestamp now) {
 	Entry sentry = std::make_pair(now, reinterpret_cast<Timer*>(UINTPTR_MAX));
 	// first not less than the key.(that is: >=)
-	TimerList::iterator it = timers_.lower_bound(sentry);
-	assert(it == timers_.end() || now < it->first);
+	TimerList::iterator expireEnd = timers_.lower_bound(sentry);
+	assert(expireEnd == timers_.end() || now < expireEnd->first);
 
 	std::vector<Entry> expired;
-	std::copy(timers_.begin(), it, std::back_inserter(expired));
-	timers_.erase(timers_.begin(), it);
+	std::copy(timers_.begin(), expireEnd, std::back_inserter(expired));
+	timers_.erase(timers_.begin(), expireEnd);
 
 	for (std::vector<Entry>::iterator it = expired.begin();
 			 it != expired.end();
@@ -117,13 +118,13 @@ void TimerQueue::addTimerInLoop(Timer* timer) {
 	loop_->assertInLoopThread();
 	bool earliestChanged = insert(timer);
 	if (earliestChanged) {
-		::resetTimerfd(timerfd_, timer_->expiration());
+		::resetTimerfd(timerfd_, timer->expiration());
 	}
 }
 
 void TimerQueue::cancelTimerInLoop(TimerId timerid) {
 	loop_->assertInLoopThread();
-	ActiveTimer timer(timerid.timer_, timerid.sequence());
+	ActiveTimer timer(timerid.timer_, timerid.sequence_);
 	ActiveTimerSet::iterator it = activeTimers_.find(timer);
 	if (it != activeTimers_.end()) {
 		size_t n = timers_.erase(Entry(it->first->expiration(), it->first));
@@ -145,14 +146,14 @@ void TimerQueue::handleRead() {
 	Timestamp now(Timestamp::now());
 	::readTimerfd(timerfd_, now);
 
-	std::vector<Entry>& expired = getExpired(now);
+	const std::vector<Entry>& expired = getExpired(now);
 
 	callingExpiredTimers_ = true;
 	cancelingTimers_.clear();
-	for (std::vector<Entry>::iterator iter = expired.begin();
+	for (std::vector<Entry>::const_iterator iter = expired.begin();
 			 iter != expired.end();
 			 ++iter) {
-		iter->second()->run();
+		iter->second->run();
 	}
 	callingExpiredTimers_ = false;
 
@@ -191,8 +192,8 @@ bool TimerQueue::insert(Timer* timer) {
 	Timestamp when = timer->expiration();
 	TimerList::iterator it = timers_.begin();
 	// timers_ is empty or less than first timer...
-	if (it == timer_.end() || when < it->first) {
-		earlistChanged = true;
+	if (it == timers_.end() || when < it->first) {
+		earliestChanged = true;
 	}
 	{
 	std::pair<TimerList::iterator, bool> result

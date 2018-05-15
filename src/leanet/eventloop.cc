@@ -31,7 +31,12 @@ int createEventfd() {
 class IgnoreSigpipe {
 public:
 	IgnoreSigpipe() {
-		::signal(SIGPIPE, SIG_IGN);
+		// ::signal(SIGPIPE, SIG_IGN);
+		struct sigaction sa;
+		sa.sa_handler = SIG_IGN;
+		sa.sa_flags = 0;
+		::sigemptyset(&sa.sa_mask);
+		::sigaction(SIGPIPE, &sa, 0);
 	}
 };
 
@@ -45,11 +50,12 @@ EventLoop::EventLoop()
 		quit_(false),
 		callingPendingFunctors_(false),
 		threadId_(currentThread::tid()),
+		pollReturnedTime_(),
 		poller_(new Poller(this)),
 		activeChannels_(),
 		timerQueue_(new TimerQueue(this)),
 		wakeupFd_(createEventfd()),
-		wakupChannel_(new Channel(this, wakeupFd_)),
+		wakeupChannel_(new Channel(this, wakeupFd_)),
 		pendingFunctors_()
 {
 	if (t_loopInThisThread) {
@@ -68,6 +74,7 @@ EventLoop::~EventLoop() {
 	t_loopInThisThread = 0;
 
 	wakeupChannel_->disableAll();
+	// no need to call wakeupChannel_->remove()
 	::close(wakeupFd_);
 }
 
@@ -88,7 +95,7 @@ void EventLoop::loop() {
 		for (ChannelList::iterator iter = activeChannels_.begin();
 				 iter != activeChannels_.end();
 				 ++iter) {
-			// pollReturnedTime_ is the time of message arival
+			// pollReturnedTime_ is the time of message arrival
 			(*iter)->handleEvent(pollReturnedTime_);
 		}
 		doPendingFunctors();
@@ -181,7 +188,7 @@ void EventLoop::handleRead() {
 	uint64_t data = 0;
 	ssize_t n = sockets::read(wakeupFd_, &data, sizeof(data));
 	if (n != sizeof(data)) {
-		LOG_ERROR << "EventLoop::handleRead() reads " << n "(instead of 8) bytes";
+		LOG_ERROR << "EventLoop::handleRead() reads " << n << "(instead of 8) bytes";
 	}
 }
 
