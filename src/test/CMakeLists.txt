@@ -3,3 +3,6 @@ target_link_libraries(atomic_unittest leanet gtest gtest_main)
 
 add_executable(blockingqueue_unittest blockingqueue_unittest.cc)
 target_link_libraries(blockingqueue_unittest leanet)
+
+add_executable(date_unittest date_unittest.cc)
+target_link_libraries(date_unittest leanet gtest gtest_main)
