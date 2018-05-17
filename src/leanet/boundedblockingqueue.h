@@ -14,7 +14,7 @@ public:
 	static const size_t DEFAULTCAPACITY = 8;
 	explicit BoundedBlockingQueue(size_t max_cap = DEFAULTCAPACITY)
 		: mutex_(),
-			notEmpty(mutex_),
+			notEmpty_(mutex_),
 			notFull_(mutex_),
 			maxCapacity_(max_cap)
 	{ }
@@ -29,7 +29,7 @@ public:
 		notEmpty_.wakeAll();
 	}
 
-	T get() const {
+	T get() {
 		MutexLock guard(mutex_);
 		while (queue_.empty()) {
 			notEmpty_.wait();
