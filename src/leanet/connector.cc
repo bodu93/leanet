@@ -116,10 +116,13 @@ void Connector::connecting(int sockfd) {
 }
 
 int Connector::removeAndResetChannel() {
+  // remove channel_ from Poller::channelList:
+  // we don't care about events on it.
 	channel_->disableAll();
 	channel_->remove();
 
 	int sockfd = channel_->fd();
+  // destroy channel_:
 	// can't reset channel_ here, because we are inside
 	// Channel::handleEvent
 	loop_->queueInLoop(std::bind(&Connector::resetChannel, this));

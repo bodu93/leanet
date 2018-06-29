@@ -12,8 +12,8 @@ class EventLoop;
 class Channel;
 
 class Connector
-	: noncopyable,
-		public std::enable_shared_from_this<Connector>
+  : noncopyable,
+    public std::enable_shared_from_this<Connector>
 {
 public:
 	typedef std::function<void (int sockfd)> NewConnectionCallback;

@@ -14,9 +14,9 @@ typedef std::shared_ptr<Connector> ConnectorPtr;
 class EventLoop;
 class TcpClient: noncopyable {
 public:
-	explicit TcpClient(EventLoop* loop,
-										 const InetAddress& serverAddr,
-										 const std::string& name);
+  explicit TcpClient(EventLoop* loop,
+                     const InetAddress& serverAddr,
+                     const std::string& name);
 	~TcpClient();
 
 	void connect();
