@@ -39,18 +39,13 @@ ThreadNameInitializer nameInitializer;
 
 uint64_t gettid() {
 	// on Linux
-	pid_t tid = static_cast<pid_t>(::syscall(SYS_gettid));
-	size_t minsz = std::min(sizeof(tid), sizeof(uint64_t));
-	uint64_t id = 0;
-	memcpy(&id, &tid, minsz);
-	return id;
+  long tid = ::syscall(SYS_gettid);
+  return static_cast<uint64_t>(tid);
 
 	// on macOS
-	// pthread_t tid = pthread_self();
-	// size_t minsz = std::min(sizeof(tid), sizeof(uint64_t));
-	// uint64_t id = 0;
-	// memcpy(&id, &tid, minsz);
-	// return id;
+  // uint64_t tid = 0;
+  // pthread_threadid_np(NULL, &tid);
+  // return tid;
 }
 
 struct ThreadData {
