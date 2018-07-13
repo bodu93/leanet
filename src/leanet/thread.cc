@@ -38,11 +38,11 @@ public:
 ThreadNameInitializer nameInitializer;
 
 uint64_t gettid() {
-	// on Linux
+  // on Linux
   long tid = ::syscall(SYS_gettid);
   return static_cast<uint64_t>(tid);
 
-	// on macOS
+  // on macOS
   // uint64_t tid = 0;
   // pthread_threadid_np(NULL, &tid);
   // return tid;
