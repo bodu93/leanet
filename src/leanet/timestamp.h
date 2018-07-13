@@ -42,10 +42,12 @@ public:
 	static Timestamp fromUnixTime(time_t t, int microSeconds)
 	{ return Timestamp(static_cast<int64_t>(t) * kMicroSecondsPerSecond + microSeconds); }
 
-  // second
-  // millisecond: 1/1000 second
-  // microsecond: 1/1000 millisecond
-  // nanosecond : 1/1000 microsecond
+  /*
+   * second
+   * millisecond: 1/1000 second
+   * microsecond: 1/1000 millisecond
+   * nanosecond:  1/1000 microsecond
+   */
 	static const int kMicroSecondsPerSecond = 1000 * 1000;
 
 private:

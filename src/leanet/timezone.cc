@@ -139,7 +139,7 @@ private:
 	FILE* fp_;
 };
 
-// "man tzfile" for detail informations
+// "man 5 tzfile" for detail informations
 // simulate functionality of tzset(3)
 bool parseTimeZoneFile(const char* fname, struct leanet::TimeZone::Data* data) {
 	File f(fname);
@@ -261,7 +261,7 @@ time_t TimeZone::fromLocalTime(const struct tm& localTm) const {
 	const Data& data(*data_);
 
 	struct tm tmp = localTm;
-	time_t seconds = timegm(&tmp);
+	time_t seconds = ::mktime(&tmp);
 	detail::Transition sentry(0, seconds, 0);
 	// ADL
 	const detail::Localtime* local = findLocaltime(data, sentry, detail::Comp(false));

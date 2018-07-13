@@ -21,7 +21,7 @@ using std::string;
 #else
 #endif
 
-// Taken from google-protobuf stubs/common.h
+// Taken from google-protobuf 3.5.1 stubs/casts.h
 //
 // Protocol Buffers - Google's data interchange format
 // Copyright 2008 Google Inc.  All rights reserved.
